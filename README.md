@@ -15,5 +15,5 @@ You will need to run cpan and install these modules:
 
 You also need to have my Synchronet BBS Startup Script installed.
 
-Then copy "smc" into a directory in your path and you should be ok.
+I then suggest you add this directory (SynchronetManagementConsole) into your path, so that you can just run "git pull" to upgrade to the latest version as updates come out.
 
