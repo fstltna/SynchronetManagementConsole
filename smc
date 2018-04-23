@@ -1,0 +1,129 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use UI::Dialog;
+use Term::ReadKey;
+use Term::ANSIScreen qw(cls);
+
+my $FileEditor = "/bin/nano";
+my $InitDName = "/etc/init.d/synchronetbbs";
+my $SBBSDIR = "/sbbs";
+
+###################################################
+# No changes below here
+###################################################
+
+my $MMC_ver = "0.5.0";
+my $Record = "false";	# Are results saved?
+my $TempDir = "/tmp";
+my $RobotName = "";
+my $BotVersion = "";
+my $UserName = "";
+my $ServerStatus = "foo";
+my $SCFG = "$SBBSDIR/exec/scfg";
+
+my $d = new UI::Dialog ( backtitle => "Synchronet BBS Management Console v$MMC_ver", height => 20, width => 65, listheight => 5,
+	order => [ 'ascii', 'cdialog', 'xdialog' ]);
+
+my $windowtitle = "Welcome to the Synchronet BBS Management Console!";
+my $enjoyedtitle = "We hope you enjoyed SMC!";
+my $introtext =
+"This is the Synchronet BBS Management Console, a utility for
+Synchronet operators to manage their servers from a text GUI
+rather than the command line.";
+
+$d->msgbox( title => $windowtitle, text => $introtext );
+
+if (($d->state() eq "ESC") || ($d->state() eq "CANCEL"))
+{
+	exit 0;
+}
+
+my $menuselection = "";
+
+sub CheckServerStatus
+{
+	my $running=`ps ax|grep sbbs|grep -v grep`;
+	if ($running ne "")
+	{
+		$ServerStatus = "Running";
+	}
+	else
+	{
+		$ServerStatus = "Stopped";
+	}
+
+}
+
+sub MainMenu
+{
+	my $WantRespawn="ON";
+	CheckServerStatus();
+	if (-f "$SBBSDIR/nostart")
+	{
+		$WantRespawn="OFF";
+	}
+
+	$menuselection = $d->menu( title => "Main Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
+                            list => [ '1', 'Start Server',
+                                      '2', 'Stop Server',
+                                      '3', 'Server Console',
+                                      '4', 'Turn Off Respawn',
+                                      '5', 'Turn Respawn On',
+                                      '6', 'Edit sbbs.ini',
+                                      '7', 'Run scfg',
+                                      'q', 'Quit SMC' ] );
+}
+
+while (-1)
+{
+	MainMenu();
+	if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+	{
+		$d->msgbox( title => $enjoyedtitle, text => "Thanks for using SMC..." );
+		exit 0;
+	}
+	if ($menuselection eq "1")
+	{
+		system("$InitDName start");
+	}
+	elsif ($menuselection eq "2")
+	{
+		if ($d->yesno( text => "Confirm stopping the server", text => "Are you sure you want to shut down the server?" ))
+		{
+			system("$InitDName stop");
+			sleep(5);
+		}
+	}
+	elsif ($menuselection eq "3")
+	{
+		$d->msgbox( text => "To exit the SBBS console and return to SMC press CTRL-A CTRL-D" );
+		system("screen -r");
+	}
+	elsif ($menuselection eq "4")
+	{
+		# Turn off respawn
+		system("touch $SBBSDIR/nostart");
+	}
+	elsif ($menuselection eq "5")
+	{
+		# Turn respawn back on
+		if (-f "$SBBSDIR/nostart")
+		{
+			unlink("$SBBSDIR/nostart");
+		}
+	}
+	elsif ($menuselection eq "6")
+	{
+		# Edit sbbs.ini file
+		system("$FileEditor $SBBSDIR/ctrl/sbbs.ini");
+	}
+	elsif ($menuselection eq "7")
+	{
+		# Run scfg
+		system("$SCFG");
+	}
+}
+
+exit 0;
