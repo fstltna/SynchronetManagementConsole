@@ -14,7 +14,7 @@ my $SBBSDIR = "/sbbs";
 # No changes below here
 ###################################################
 
-my $MMC_ver = "0.5.0";
+my $MMC_ver = "0.6.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -70,9 +70,13 @@ sub MainMenu
                                       '2', 'Stop Server',
                                       '3', 'Server Console',
                                       '4', 'Turn Off Respawn',
-                                      '5', 'Turn Respawn On',
+                                      '5', 'Turn On Respawn',
                                       '6', 'Edit sbbs.ini',
                                       '7', 'Run scfg',
+                                      '8', 'Edit Announce.txt',
+                                      '9', 'Edit FilePost.txt',
+                                      '10', 'Edit FilePostBottom.txt',
+                                      '11', 'Back Up BBS',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -123,6 +127,26 @@ while (-1)
 	{
 		# Run scfg
 		system("$SCFG");
+	}
+	elsif ($menuselection eq "8")
+	{
+		# Edit Announce.txt file
+		system("$FileEditor $SBBSDIR/exec/Announce.txt");
+	}
+	elsif ($menuselection eq "9")
+	{
+		# Edit FilePost.txt file
+		system("$FileEditor $SBBSDIR/exec/FilePost.txt");
+	}
+	elsif ($menuselection eq "10")
+	{
+		# Edit FilePostBottom.txt file
+		system("$FileEditor $SBBSDIR/exec/FilePostBottom.txt");
+	}
+	elsif ($menuselection eq "11")
+	{
+		# Run a backup
+		system("/root/SyncBackup/syncbackup.pl");
 	}
 }
 
