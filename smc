@@ -9,6 +9,7 @@ use Term::ANSIScreen qw(cls);
 my $FileEditor = "/bin/nano";
 my $InitDName = "/etc/init.d/synchronetbbs";
 my $SBBSDIR = "/sbbs";
+my $BBS_OWNER = "bbsowner";
 
 ###################################################
 # No changes below here
@@ -79,6 +80,7 @@ sub MainMenu
                                       '11', 'Back Up BBS',
                                       '12', 'Run BBS Announce',
                                       '13', 'Run FileAnnounce',
+                                      '14', 'Set BBS Owner',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -159,6 +161,11 @@ while (-1)
 	{
 		# Run File Announce
 		system("/root/bbs_utils/file_announce.pl");
+	}
+	elsif ($menuselection eq "14")
+	{
+		# Set owner of /sbbs
+		system("chown -R $BBS_OWNER /sbbs");
 	}
 }
 
