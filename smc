@@ -14,7 +14,7 @@ my $SBBSDIR = "/sbbs";
 # No changes below here
 ###################################################
 
-my $MMC_ver = "0.6.0";
+my $MMC_ver = "0.7.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -77,6 +77,8 @@ sub MainMenu
                                       '9', 'Edit FilePost.txt',
                                       '10', 'Edit FilePostBottom.txt',
                                       '11', 'Back Up BBS',
+                                      '12', 'Run BBS Announce',
+                                      '13', 'Run FileAnnounce',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -147,6 +149,16 @@ while (-1)
 	{
 		# Run a backup
 		system("/root/SyncBackup/syncbackup.pl");
+	}
+	elsif ($menuselection eq "12")
+	{
+		# Run BBS Announce
+		system("/root/bbs_utils/bbs_announce.pl");
+	}
+	elsif ($menuselection eq "13")
+	{
+		# Run File Announce
+		system("/root/bbs_utils/file_announce.pl");
 	}
 }
 
