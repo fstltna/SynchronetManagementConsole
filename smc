@@ -174,11 +174,19 @@ while (-1)
 	elsif ($menuselection eq "15")
 	{
 		# Edit BBSIDS.txt file
+		if (! -f $BBSIDS)
+		{
+			system("cp /root/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
+		}
 		system("$FileEditor $BBSIDS");
 	}
 	elsif ($menuselection eq "16")
 	{
 		# Edit FILEID.txt file
+		if (! -f $FILEID)
+		{
+			system("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
+		}
 		system("$FileEditor $FILEID");
 	}
 }

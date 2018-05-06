@@ -1,0 +1,3 @@
+SUBJECT:set subject here
+FROM:set owner here
+GROUPS:set groups to post to here seperated by spaces
