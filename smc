@@ -10,12 +10,14 @@ my $FileEditor = "/bin/nano";
 my $InitDName = "/etc/init.d/synchronetbbs";
 my $SBBSDIR = "/sbbs";
 my $BBS_OWNER = "bbsowner";
+my $FILEID = "$SBBSDIR/FILEID.txt";
+my $BBSIDS = "$SBBSDIR/BBSIDS.txt";
 
 ###################################################
 # No changes below here
 ###################################################
 
-my $MMC_ver = "0.7.0";
+my $MMC_ver = "0.8.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -81,6 +83,8 @@ sub MainMenu
                                       '12', 'Run BBS Announce',
                                       '13', 'Run FileAnnounce',
                                       '14', 'Set BBS Owner',
+                                      '15', 'Edit BBS IDs',
+                                      '16', 'Edit File ID',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -166,6 +170,16 @@ while (-1)
 	{
 		# Set owner of /sbbs
 		system("chown -R $BBS_OWNER /sbbs");
+	}
+	elsif ($menuselection eq "15")
+	{
+		# Edit BBSIDS.txt file
+		system("$FileEditor $BBSIDS");
+	}
+	elsif ($menuselection eq "16")
+	{
+		# Edit FILEID.txt file
+		system("$FileEditor $FILEID");
 	}
 }
 
