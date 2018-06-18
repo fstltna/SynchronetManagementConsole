@@ -137,6 +137,7 @@ sub MainMenu
                                       '14', 'Set BBS Owner',
                                       '15', 'Edit BBS IDs',
                                       '16', 'Edit File ID',
+                                      '17', 'Call DOVENET',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -248,6 +249,11 @@ while (-1)
 			system("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
 		}
 		system("$FileEditor $FILEID");
+	}
+	elsif ($menuselection eq "17")
+	{
+		# Force a call-out to Dovenet
+		system("touch /sbbs/data/qnet/vert.now");
 	}
 }
 
