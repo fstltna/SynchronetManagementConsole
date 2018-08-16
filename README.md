@@ -3,6 +3,8 @@ Allows you to manage your Synchronet BBS server with a text based GUI -
 Official support sites: [Official Github Repo](https://github.com/fstltna/SynchronetManagementConsole) - [Official Forum](https://synchronetbbs.org/index.php/forum/synchronet-management-console)
 ![Synchronet Logo](https://SynchronetBBS.org/SynchronetLogo.png)
 
+[![Visit our IRC channel](https://kiwiirc.com/buttons/irc.synchro.net/SynchronetFans.png)](https://kiwiirc.com/client/irc.synchro.net/?nick=guest|?#SynchronetFans)
+
 ---
 
 Edit "smc" and change the settings at the top if your Synchronet BBS server is not in "/sbbs".
