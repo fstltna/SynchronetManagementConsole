@@ -12,12 +12,16 @@ my $SBBSDIR = "/sbbs";
 my $BBS_OWNER = "bbsowner";
 my $FILEID = "$SBBSDIR/FILEID.txt";
 my $BBSIDS = "$SBBSDIR/BBSIDS.txt";
+my $BackupCommand = "/root/SyncBackup/syncbackup.pl";
+my $PagerCommand = "/usr/bin/less";
 
 ###################################################
 # No changes below here
 ###################################################
 
-my $MMC_ver = "0.8.1";
+my $MySettings = "$ENV{'HOME'}/.smcrc";
+
+my $MMC_ver = "1.0.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -51,6 +55,65 @@ $d->msgbox( title => $windowtitle, text => $introtext );
 if (($d->state() eq "ESC") || ($d->state() eq "CANCEL"))
 {
 	exit 0;
+}
+
+# Check for config file
+if (-f $MySettings)
+{
+	# Read in settings
+	open (my $FH, "<", $MySettings) or die "Could not read default file '$MySettings' $!";
+	while (<$FH>)
+	{
+		chop();
+		my ($Command, $Setting) = split(/=/, $_);
+		if ($Command eq "fileeditor")
+		{
+			$FileEditor = $Setting;
+		}
+		if ($Command eq "initdname")
+		{
+			$InitDName = $Setting;
+		}
+		if ($Command eq "sbbsdir")
+		{
+			$SBBSDIR = $Setting;
+		}
+		if ($Command eq "backupcommand")
+		{
+			$BackupCommand = $Setting;
+		}
+		if ($Command eq "pagercommand")
+		{
+			$PagerCommand = $Setting;
+		}
+		if ($Command eq "bbsowner")
+		{
+			$BBS_OWNER = $Setting;
+		}
+		if ($Command eq "fileid")
+		{
+			$FILEID = $Setting;
+		}
+		if ($Command eq "bbsids")
+		{
+			$BBSIDS = $Setting;
+		}
+	}
+	close($FH);
+}
+else
+{
+	# Store defaults
+	open (my $FH, ">", $MySettings) or die "Could not create default file '$MySettings' $!";
+	print $FH "sbbsdir=/sbbs\n";
+	print $FH "fileeditor=/bin/nano\n";
+	print $FH "backupcommand=/root/SyncBackup/syncbackup.pl\n";
+	print $FH "pagercommand=/usr/bin/less\n";
+	print $FH "bbsowner=bbsowner\n";
+	print $FH "fileid=/sbbs/FILEID.txt\n";
+	print $FH "bbsid=/sbbs/BBSIDS.txt\n";
+	print $FH "bbsowner=bbsowner\n";
+	close($FH);
 }
 
 my $menuselection = "";
@@ -138,6 +201,7 @@ sub MainMenu
                                       '15', 'Edit BBS IDs',
                                       '16', 'Edit File ID',
                                       '17', 'Call DOVENET',
+                                      '18', 'Edit Settings',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -207,7 +271,7 @@ while (-1)
 	elsif ($menuselection eq "11")
 	{
 		# Run a backup
-		system("/root/SyncBackup/syncbackup.pl");
+		system("$BackupCommand");
 	}
 	elsif ($menuselection eq "12")
 	{
@@ -254,6 +318,11 @@ while (-1)
 	{
 		# Force a call-out to Dovenet
 		system("touch /sbbs/data/qnet/vert.now");
+	}
+	elsif ($menuselection eq "18")
+	{
+		# Edit Settings
+		system("$FileEditor $MySettings");
 	}
 }
 
