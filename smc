@@ -199,7 +199,7 @@ sub MainMenu
                                       '13', 'Run FileAnnounce',
                                       '14', 'Set BBS Owner',
                                       '15', 'Edit BBS IDs',
-                                      '16', 'Edit File ID',
+                                      '16', 'Edit File IDs',
                                       '17', 'Call DOVENET',
                                       '18', 'Edit Settings',
                                       'q', 'Quit SMC' ] );
