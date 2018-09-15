@@ -21,7 +21,7 @@ my $PagerCommand = "/usr/bin/less";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.0.0";
+my $MMC_ver = "1.1.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
