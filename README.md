@@ -1,4 +1,4 @@
-# Synchronet BBS Management Console (1.1.0)
+# Synchronet BBS Management Console (1.2.0)
 Allows you to manage your Synchronet BBS server with a text based GUI - 
 Official support sites: [Official Github Repo](https://github.com/fstltna/SynchronetManagementConsole) - [Official Forum](https://synchronetbbs.org/index.php/forum/synchronet-management-console)
 ![Synchronet Logo](https://SynchronetBBS.org/SynchronetLogo.png)
@@ -38,3 +38,5 @@ Here are more detailed explainations of the SMC options. Refer to this menu for 
 7. "16 - Edit File IDs" - This is the settings tha the #13 "Run File Announce" option uses to post your messages.![](https://SynchronetBBS.org/SMC_Images/SMC_FILE_ID.png) 
 8. "17 - Call DOVENET" - Tell the BBS to check Dovenet for new data right away.
 9. "18 - Edit Settings" - Edit the settings used in SMC itself. Should not need changes but it is here just in case. If you make any changes here you need to exit SMC and relaunch it again.
+10. "19 - Call NEWSLINK" - Tell the BBS to check Newslink/USENET for new data right away.
+
