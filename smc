@@ -21,7 +21,7 @@ my $PagerCommand = "/usr/bin/less";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.1.0";
+my $MMC_ver = "1.2.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -202,6 +202,7 @@ sub MainMenu
                                       '16', 'Edit File IDs',
                                       '17', 'Call DOVENET',
                                       '18', 'Edit Settings',
+                                      '19', 'Call Newslink',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -319,12 +320,17 @@ while (-1)
 	elsif ($menuselection eq "17")
 	{
 		# Force a call-out to Dovenet
-		system("touch /sbbs/data/qnet/vert.now");
+		system("touch $SBBSDIR/data/qnet/vert.now");
 	}
 	elsif ($menuselection eq "18")
 	{
 		# Edit Settings
 		system("$FileEditor $MySettings");
+	}
+	elsif ($menuselection eq "19")
+	{
+		# Force a call-out to Usenet/Newslink
+		system("touch $SBBSDIR/data/newslink.now");
 	}
 }
 
