@@ -14,6 +14,7 @@ You will need to run cpan and install these modules:
 - UI::Dialog
 - Term::ReadKey
 - Term::ANSIScreen
+- Proc::ProcessTable
 
 You also need to have my Synchronet BBS Startup Script and Synchronet BBS Backup Script installed.
 
