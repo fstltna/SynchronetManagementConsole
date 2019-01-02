@@ -5,6 +5,7 @@ use warnings;
 use UI::Dialog;
 use Term::ReadKey;
 use Term::ANSIScreen qw(cls);
+use Proc::ProcessTable;
 
 my $FileEditor = "/bin/nano";
 my $InitDName = "/etc/init.d/synchronetbbs";
@@ -21,7 +22,7 @@ my $PagerCommand = "/usr/bin/less";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.2.0";
+my $MMC_ver = "1.3.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -120,16 +121,24 @@ my $menuselection = "";
 
 sub CheckServerStatus
 {
-	my $running=`ps ax|grep sbbs|grep -v grep`;
-	if ($running ne "")
-	{
-		$ServerStatus = "Running";
-	}
-	else
-	{
-		$ServerStatus = "Stopped";
-	}
+	$ServerStatus = "Stopped";
 
+        # This checks for the BBS process
+        my $t = Proc::ProcessTable->new;
+        foreach my $p ( @{$t->table} )
+        {
+                #printf($FORMAT, 
+                #       $p->pid, 
+                #       $p->ttydev, 
+                #       $p->state, 
+                #       scalar(localtime($p->start)), 
+                #       $p->cmndline);
+                if ($p->cmndline eq "sbbs")
+                {
+                        # Saw a bare sbbs entry
+			$ServerStatus = "Running";
+                }
+        }
 }
 
 sub ReadConfig
@@ -174,6 +183,31 @@ sub ReadConfig
 	}
 }
 
+sub KillBBS
+{
+	# This kills just the BBS process, so it can be restarted
+	# via the startup script
+	my $FORMAT = "%-6s %-10s %-8s %-24s %s\n";
+	my $t = Proc::ProcessTable->new;
+	#printf($FORMAT, "PID", "TTY", "STAT", "START", "COMMAND"); 
+	foreach my $p ( @{$t->table} )
+	{
+		#printf($FORMAT, 
+		#	$p->pid, 
+		#	$p->ttydev, 
+		#	$p->state, 
+		#	scalar(localtime($p->start)), 
+		#	$p->cmndline);
+		if ($p->cmndline eq "sbbs")
+		{
+			# Saw a bare sbbs entry
+			my $pid = $p->pid;
+			#print "**** saw it $pid\n";
+			system("kill $pid");
+		}
+	}
+}
+
 sub MainMenu
 {
 	my $WantRespawn="ON";
@@ -203,6 +237,7 @@ sub MainMenu
                                       '17', 'Call DOVENET',
                                       '18', 'Edit Settings',
                                       '19', 'Call Newslink',
+                                      '20', 'Reset BBS Proc.',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -223,7 +258,7 @@ while (-1)
 		if ($d->yesno( text => "Confirm stopping the server", text => "Are you sure you want to shut down the server?" ))
 		{
 			system("$InitDName stop");
-			sleep(5);
+			sleep(10);
 		}
 	}
 	elsif ($menuselection eq "3")
@@ -331,6 +366,13 @@ while (-1)
 	{
 		# Force a call-out to Usenet/Newslink
 		system("touch $SBBSDIR/data/newslink.now");
+	}
+	elsif ($menuselection eq "20")
+	{
+		# Reset the server process
+		print "Killing process, please wait...";
+		KillBBS();
+		sleep(10);
 	}
 }
 
