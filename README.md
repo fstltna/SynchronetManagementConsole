@@ -25,19 +25,21 @@ I then suggest you add this directory (SynchronetManagementConsole) into your pa
 
 ***
 
-Here are more detailed explainations of the SMC options. Refer to this menu for what follows:
+1. "8 - Back Up BBS" - As it says this backs up your BBS folder tree.
+2. "9 - Set BBS Owner" - If you have made any changes in scfg or through the shell you should run this option to reset the owner of the BBS tree to the BBS owner and not "root" or other users.
+3. "10 - Call DOVENET" - Tell the BBS to check Dovenet for new data right away.
+4. "11 - Edit Settings" - Edit the settings used in SMC itself. Should not need changes but it is here just in case. If you make any changes here you need to exit SMC and relaunch it again.
+5. "12 - Call NEWSLINK" - Tell the BBS to check Newslink/USENET for new data right away.
+6. "13 - Reset BBS Processess" - Resets just the BBS process so it can be automaticly restarted.
+7. "14 - Posting Tools" - Brings up the posting tools menu.
 
-![](https://SynchronetBBS.org/SMC_Images/SMC_Main_Menu.png) 
+Refer to this menu for what follows:
+
+![](https://SynchronetBBS.org/SMC_Images/SMC_PostingMenu.png) 
 
 
-1. "8 - Edit Announce.txt" - This is the text that will be used by the #12 "Run BBS Announce" option. This posts about your BBS to the selected groups as set up in the #15 "Edit BBS IDs" option.
-2. "9 - Edit FilePost.txt" - This is the text that is shown before the list of files as sent in the #13 "Run FileAnnounce" option.
-3. "10 - Edit FilePostBottom" - This is the text that appears after the files as sent in the #13 "Run FileAnnounce" option.
-4. "11 - Back Up BBS" - As it says this backs up your BBS folder tree.
-5. "14 - Set BBS Owner" - If you have made any changes in scfg or through the shell you should run this option to reset the owner of the BBS tree to the BBS owner and not "root" or other users.
-6. "15 - Edit BBS IDs" - This is the settings tha the #12 "Run BBS Announce" option uses to post your messages.![](https://SynchronetBBS.org/SMC_Images/SMC_BBS_IDS.png) 
-7. "16 - Edit File IDs" - This is the settings tha the #13 "Run File Announce" option uses to post your messages.![](https://SynchronetBBS.org/SMC_Images/SMC_FILE_ID.png) 
-8. "17 - Call DOVENET" - Tell the BBS to check Dovenet for new data right away.
-9. "18 - Edit Settings" - Edit the settings used in SMC itself. Should not need changes but it is here just in case. If you make any changes here you need to exit SMC and relaunch it again.
-10. "19 - Call NEWSLINK" - Tell the BBS to check Newslink/USENET for new data right away.
-
+1. "1 - Edit Announce.txt" - This is the text that will be used by the #4 "Run BBS Announce" option. This posts about your BBS to the selected groups as set up in the #6 "Edit BBS IDs" option.
+2. "2 - Edit FilePost.txt" - This is the text that is shown before the list of files as sent in the #5 "Run FileAnnounce" option.
+3. "3 - Edit FilePostBottom" - This is the text that appears after the files as sent in the #5 "Run FileAnnounce" option.
+6. "6 - Edit BBS IDs" - This is the settings tha the #12 "Run BBS Announce" option uses to post your messages.![](https://SynchronetBBS.org/SMC_Images/SMC_BBS_IDS.png) 
+7. "7 - Edit File IDs" - This is the settings tha the #5 "Run File Announce" option uses to post your messages.![](https://SynchronetBBS.org/SMC_Images/SMC_FILE_ID.png) 
