@@ -22,7 +22,7 @@ my $PagerCommand = "/usr/bin/less";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.3.0";
+my $MMC_ver = "1.4.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -225,20 +225,97 @@ sub MainMenu
                                       '5', 'Turn On Respawn',
                                       '6', 'Edit sbbs.ini',
                                       '7', 'Run scfg',
-                                      '8', 'Edit Announce.txt',
-                                      '9', 'Edit FilePost.txt',
-                                      '10', 'Edit FilePostBottom.txt',
-                                      '11', 'Back Up BBS',
-                                      '12', 'Run BBS Announce',
-                                      '13', 'Run FileAnnounce',
-                                      '14', 'Set BBS Owner',
-                                      '15', 'Edit BBS IDs',
-                                      '16', 'Edit File IDs',
-                                      '17', 'Call DOVENET',
-                                      '18', 'Edit Settings',
-                                      '19', 'Call Newslink',
-                                      '20', 'Reset BBS Proc.',
+                                      '8', 'Back Up BBS',
+                                      '9', 'Set BBS Owner',
+                                      '10', 'Call DOVENET',
+                                      '11', 'Edit Settings',
+                                      '12', 'Call Newslink',
+                                      '13', 'Reset BBS Proc.',
+                                      '14', 'Posting Tools',
                                       'q', 'Quit SMC' ] );
+}
+
+sub PostingToolsMenu
+{
+	my $WantRespawn="ON";
+	CheckServerStatus();
+	if (-f "$SBBSDIR/nostart")
+	{
+		$WantRespawn="OFF";
+	}
+
+	$menuselection = $d->menu( title => "Posting Tools Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
+                            list => [ '1', 'Edit Announce.txt',
+                                      '2', 'Edit FilePost.txt',
+                                      '3', 'Edit FilePostBottom.txt',
+                                      '4', 'Run BBS Announce',
+                                      '5', 'Run FileAnnounce',
+                                      '6', 'Edit BBS IDs',
+                                      '7', 'Edit File IDs',
+                                      'q', 'Main Menu' ] );
+}
+
+sub PostingTools
+{
+while (-1)
+{
+	PostingToolsMenu();
+	if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+	{
+		return;
+	}
+	elsif ($menuselection eq "1")
+	{
+		# Edit Announce.txt file
+		system("$FileEditor $SBBSDIR/exec/Announce.txt");
+	}
+	elsif ($menuselection eq "2")
+	{
+		# Edit FilePost.txt file
+		system("$FileEditor $SBBSDIR/exec/FilePost.txt");
+	}
+	elsif ($menuselection eq "3")
+	{
+		# Edit FilePostBottom.txt file
+		system("$FileEditor $SBBSDIR/exec/FilePostBottom.txt");
+	}
+	elsif ($menuselection eq "4")
+	{
+		# Read in config
+		$CONF_FILE = $BBSIDS;
+		ReadConfig();
+
+		# Run BBS Announce
+		system("/root/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
+	}
+	elsif ($menuselection eq "5")
+	{
+		# Read in config
+		$CONF_FILE = $FILEID;
+		ReadConfig();
+
+		# Run File Announce
+		system("/root/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
+	}
+	elsif ($menuselection eq "6")
+	{
+		# Edit BBSIDS.txt file
+		if (! -f $BBSIDS)
+		{
+			system("cp /root/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
+		}
+		system("$FileEditor $BBSIDS");
+	}
+	elsif ($menuselection eq "7")
+	{
+		# Edit FILEID.txt file
+		if (! -f $FILEID)
+		{
+			system("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
+		}
+		system("$FileEditor $FILEID");
+	}
+}
 }
 
 while (-1)
@@ -291,88 +368,42 @@ while (-1)
 	}
 	elsif ($menuselection eq "8")
 	{
-		# Edit Announce.txt file
-		system("$FileEditor $SBBSDIR/exec/Announce.txt");
-	}
-	elsif ($menuselection eq "9")
-	{
-		# Edit FilePost.txt file
-		system("$FileEditor $SBBSDIR/exec/FilePost.txt");
-	}
-	elsif ($menuselection eq "10")
-	{
-		# Edit FilePostBottom.txt file
-		system("$FileEditor $SBBSDIR/exec/FilePostBottom.txt");
-	}
-	elsif ($menuselection eq "11")
-	{
 		# Run a backup
 		system("$BackupCommand");
                 print "Press Enter To Continue";
                 my $entered = <STDIN>;
 	}
-	elsif ($menuselection eq "12")
-	{
-		# Read in config
-		$CONF_FILE = $BBSIDS;
-		ReadConfig();
-
-		# Run BBS Announce
-		system("/root/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
-	}
-	elsif ($menuselection eq "13")
-	{
-		# Read in config
-		$CONF_FILE = $FILEID;
-		ReadConfig();
-
-		# Run File Announce
-		system("/root/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
-	}
-	elsif ($menuselection eq "14")
+	elsif ($menuselection eq "9")
 	{
 		# Set owner of /sbbs
 		system("chown -R $BBS_OWNER /sbbs");
 	}
-	elsif ($menuselection eq "15")
-	{
-		# Edit BBSIDS.txt file
-		if (! -f $BBSIDS)
-		{
-			system("cp /root/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
-		}
-		system("$FileEditor $BBSIDS");
-	}
-	elsif ($menuselection eq "16")
-	{
-		# Edit FILEID.txt file
-		if (! -f $FILEID)
-		{
-			system("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
-		}
-		system("$FileEditor $FILEID");
-	}
-	elsif ($menuselection eq "17")
+	elsif ($menuselection eq "10")
 	{
 		# Force a call-out to Dovenet
 		system("touch $SBBSDIR/data/qnet/vert.now");
 	}
-	elsif ($menuselection eq "18")
+	elsif ($menuselection eq "11")
 	{
 		# Edit Settings
 		system("$FileEditor $MySettings");
 	}
-	elsif ($menuselection eq "19")
+	elsif ($menuselection eq "12")
 	{
 		# Force a call-out to Usenet/Newslink
 		system("touch $SBBSDIR/data/newslink.now");
 	}
-	elsif ($menuselection eq "20")
+	elsif ($menuselection eq "13")
 	{
 		# Reset the server process
 		print "Killing process, please wait...";
 		KillBBS();
 		sleep(10);
+	}
+	elsif ($menuselection eq "14")
+	{
+		# Posting tools
+		PostingTools();
 	}
 }
 
