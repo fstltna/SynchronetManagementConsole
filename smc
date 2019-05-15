@@ -22,7 +22,7 @@ my $PagerCommand = "/usr/bin/less";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.4.0";
+my $MMC_ver = "1.5.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -30,6 +30,7 @@ my $BotVersion = "";
 my $UserName = "";
 my $ServerStatus = "foo";
 my $SCFG = "$SBBSDIR/exec/scfg";
+my $DEBUG_MODE = "off";
 
 my $CONF_FROM = "";
 my $CONF_SUBJECT = "";
@@ -58,66 +59,85 @@ if (($d->state() eq "ESC") || ($d->state() eq "CANCEL"))
 	exit 0;
 }
 
-# Check for config file
-if (-f $MySettings)
+sub ReadConfigFile
 {
-	# Read in settings
-	open (my $FH, "<", $MySettings) or die "Could not read default file '$MySettings' $!";
-	while (<$FH>)
+	# Check for config file
+	if (-f $MySettings)
 	{
-		chop();
-		my ($Command, $Setting) = split(/=/, $_);
-		if ($Command eq "fileeditor")
+		# Read in settings
+		open (my $FH, "<", $MySettings) or die "Could not read default file '$MySettings' $!";
+		while (<$FH>)
 		{
-			$FileEditor = $Setting;
+			chop();
+			my ($Command, $Setting) = split(/=/, $_);
+			if ($Command eq "fileeditor")
+			{
+				$FileEditor = $Setting;
+			}
+			if ($Command eq "initdname")
+			{
+				$InitDName = $Setting;
+			}
+			if ($Command eq "sbbsdir")
+			{
+				$SBBSDIR = $Setting;
+			}
+			if ($Command eq "backupcommand")
+			{
+				$BackupCommand = $Setting;
+			}
+			if ($Command eq "pagercommand")
+			{
+				$PagerCommand = $Setting;
+			}
+			if ($Command eq "bbsowner")
+			{
+				$BBS_OWNER = $Setting;
+			}
+			if ($Command eq "fileid")
+			{
+				$FILEID = $Setting;
+			}
+			if ($Command eq "bbsids")
+			{
+				$BBSIDS = $Setting;
+			}
+			if ($Command eq "debugmode")
+			{
+				$DEBUG_MODE = $Setting;
+			}
 		}
-		if ($Command eq "initdname")
-		{
-			$InitDName = $Setting;
-		}
-		if ($Command eq "sbbsdir")
-		{
-			$SBBSDIR = $Setting;
-		}
-		if ($Command eq "backupcommand")
-		{
-			$BackupCommand = $Setting;
-		}
-		if ($Command eq "pagercommand")
-		{
-			$PagerCommand = $Setting;
-		}
-		if ($Command eq "bbsowner")
-		{
-			$BBS_OWNER = $Setting;
-		}
-		if ($Command eq "fileid")
-		{
-			$FILEID = $Setting;
-		}
-		if ($Command eq "bbsids")
-		{
-			$BBSIDS = $Setting;
-		}
+		close($FH);
 	}
-	close($FH);
-}
-else
-{
-	# Store defaults
-	open (my $FH, ">", $MySettings) or die "Could not create default file '$MySettings' $!";
-	print $FH "sbbsdir=/sbbs\n";
-	print $FH "fileeditor=/bin/nano\n";
-	print $FH "backupcommand=/root/SyncBackup/syncbackup.pl\n";
-	print $FH "pagercommand=/usr/bin/less\n";
-	print $FH "bbsowner=bbsowner\n";
-	print $FH "fileid=/sbbs/FILEID.txt\n";
-	print $FH "bbsid=/sbbs/BBSIDS.txt\n";
-	print $FH "bbsowner=bbsowner\n";
-	close($FH);
+	else
+	{
+		# Store defaults
+		open (my $FH, ">", $MySettings) or die "Could not create default file '$MySettings' $!";
+		print $FH "sbbsdir=/sbbs\n";
+		print $FH "fileeditor=/bin/nano\n";
+		print $FH "backupcommand=/root/SyncBackup/syncbackup.pl\n";
+		print $FH "pagercommand=/usr/bin/less\n";
+		print $FH "bbsowner=bbsowner\n";
+		print $FH "fileid=/sbbs/FILEID.txt\n";
+		print $FH "bbsid=/sbbs/BBSIDS.txt\n";
+		print $FH "debugmode=off\n";
+		close($FH);
+	}
 }
 
 my $menuselection = "";
+
+sub PrintDebugCommand
+{
+	if ($DEBUG_MODE eq "off")
+	{
+		return;
+	}
+	my $PassedString = shift;
+	print "About to run:\n$PassedString\n";
+	print "Press Enter To Run This:";
+	my $entered = <STDIN>;
+}
 
 sub CheckServerStatus
 {
@@ -203,6 +223,7 @@ sub KillBBS
 			# Saw a bare sbbs entry
 			my $pid = $p->pid;
 			#print "**** saw it $pid\n";
+			PrintDebugCommand("kill $pid");
 			system("kill $pid");
 		}
 	}
@@ -267,16 +288,19 @@ while (-1)
 	elsif ($menuselection eq "1")
 	{
 		# Edit Announce.txt file
+		PrintDebugCommand("$FileEditor $SBBSDIR/exec/Announce.txt");
 		system("$FileEditor $SBBSDIR/exec/Announce.txt");
 	}
 	elsif ($menuselection eq "2")
 	{
 		# Edit FilePost.txt file
+		PrintDebugCommand("$FileEditor $SBBSDIR/exec/FilePost.txt");
 		system("$FileEditor $SBBSDIR/exec/FilePost.txt");
 	}
 	elsif ($menuselection eq "3")
 	{
 		# Edit FilePostBottom.txt file
+		PrintDebugCommand("$FileEditor $SBBSDIR/exec/FilePostBottom.txt");
 		system("$FileEditor $SBBSDIR/exec/FilePostBottom.txt");
 	}
 	elsif ($menuselection eq "4")
@@ -286,6 +310,7 @@ while (-1)
 		ReadConfig();
 
 		# Run BBS Announce
+		PrintDebugCommand("/root/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
 		system("/root/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
 	}
 	elsif ($menuselection eq "5")
@@ -295,6 +320,7 @@ while (-1)
 		ReadConfig();
 
 		# Run File Announce
+		PrintDebugCommand("/root/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
 		system("/root/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
 	}
 	elsif ($menuselection eq "6")
@@ -302,8 +328,10 @@ while (-1)
 		# Edit BBSIDS.txt file
 		if (! -f $BBSIDS)
 		{
+			PrintDebugCommand("cp /root/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
 			system("cp /root/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
 		}
+		PrintDebugCommand("$FileEditor $BBSIDS");
 		system("$FileEditor $BBSIDS");
 	}
 	elsif ($menuselection eq "7")
@@ -311,12 +339,16 @@ while (-1)
 		# Edit FILEID.txt file
 		if (! -f $FILEID)
 		{
+			PrintDebugCommand("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
 			system("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
 		}
+		PrintDebugCommand("$FileEditor $FILEID");
 		system("$FileEditor $FILEID");
 	}
 }
 }
+
+ReadConfigFile();
 
 while (-1)
 {
@@ -328,12 +360,14 @@ while (-1)
 	}
 	if ($menuselection eq "1")
 	{
+		PrintDebugCommand("$InitDName start");
 		system("$InitDName start");
 	}
 	elsif ($menuselection eq "2")
 	{
 		if ($d->yesno( text => "Confirm stopping the server", text => "Are you sure you want to shut down the server?" ))
 		{
+			PrintDebugCommand("$InitDName stop");
 			system("$InitDName stop");
 			sleep(10);
 		}
@@ -341,11 +375,13 @@ while (-1)
 	elsif ($menuselection eq "3")
 	{
 		$d->msgbox( text => "To exit the SBBS console and return to SMC press CTRL-A CTRL-D" );
+		PrintDebugCommand("screen -r");
 		system("screen -r");
 	}
 	elsif ($menuselection eq "4")
 	{
 		# Turn off respawn
+		PrintDebugCommand("touch $SBBSDIR/nostart");
 		system("touch $SBBSDIR/nostart");
 	}
 	elsif ($menuselection eq "5")
@@ -359,16 +395,19 @@ while (-1)
 	elsif ($menuselection eq "6")
 	{
 		# Edit sbbs.ini file
+		PrintDebugCommand("$FileEditor $SBBSDIR/ctrl/sbbs.ini");
 		system("$FileEditor $SBBSDIR/ctrl/sbbs.ini");
 	}
 	elsif ($menuselection eq "7")
 	{
 		# Run scfg
+		PrintDebugCommand("$SCFG");
 		system("$SCFG");
 	}
 	elsif ($menuselection eq "8")
 	{
 		# Run a backup
+		PrintDebugCommand("$BackupCommand");
 		system("$BackupCommand");
                 print "Press Enter To Continue";
                 my $entered = <STDIN>;
@@ -376,21 +415,26 @@ while (-1)
 	elsif ($menuselection eq "9")
 	{
 		# Set owner of /sbbs
+		PrintDebugCommand("chown -R $BBS_OWNER /sbbs");
 		system("chown -R $BBS_OWNER /sbbs");
 	}
 	elsif ($menuselection eq "10")
 	{
 		# Force a call-out to Dovenet
+		PrintDebugCommand("touch $SBBSDIR/data/qnet/vert.now");
 		system("touch $SBBSDIR/data/qnet/vert.now");
 	}
 	elsif ($menuselection eq "11")
 	{
 		# Edit Settings
+		PrintDebugCommand("$FileEditor $MySettings");
 		system("$FileEditor $MySettings");
+		ReadConfigFile();
 	}
 	elsif ($menuselection eq "12")
 	{
 		# Force a call-out to Usenet/Newslink
+		PrintDebugCommand("touch $SBBSDIR/data/newslink.now");
 		system("touch $SBBSDIR/data/newslink.now");
 	}
 	elsif ($menuselection eq "13")
