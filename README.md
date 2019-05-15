@@ -1,4 +1,4 @@
-# Synchronet BBS Management Console (1.5.0)
+# Synchronet BBS Management Console (1.5.1)
 Allows you to manage your Synchronet BBS server with a text based GUI - 
 Official support sites: [Official Github Repo](https://github.com/fstltna/SynchronetManagementConsole) - [Official Forum](https://synchronetbbs.org/index.php/forum/synchronet-management-console)
 ![Synchronet Logo](https://SynchronetBBS.org/SynchronetLogo.png)
@@ -26,7 +26,7 @@ I then suggest you add this directory (SynchronetManagementConsole) into your pa
 ***
 
 1. "8 - Back Up BBS" - As it says this backs up your BBS folder tree.
-2. "9 - Set BBS Owner" - If you have made any changes in scfg or through the shell you should run this option to reset the owner of the BBS tree to the BBS owner and not "root" or other users.
+2. "9 - Set File Owners" - If you have made any changes in scfg or through the shell you should run this option to reset the owner of the BBS tree to the BBS owner and not "root" or other users.
 3. "10 - Call DOVENET" - Tell the BBS to check Dovenet for new data right away.
 4. "11 - Edit Settings" - Edit the settings used in SMC itself. Should not need changes but it is here just in case. You can edit the "debugmode" option to "on" to display each command that will be run before executing them.
 5. "12 - Call NEWSLINK" - Tell the BBS to check Newslink/USENET for new data right away.

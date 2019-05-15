@@ -22,7 +22,7 @@ my $PagerCommand = "/usr/bin/less";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.5.0";
+my $MMC_ver = "1.5.1";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -247,7 +247,7 @@ sub MainMenu
                                       '6', 'Edit sbbs.ini',
                                       '7', 'Run scfg',
                                       '8', 'Back Up BBS',
-                                      '9', 'Set BBS Owner',
+                                      '9', 'Set File Owners',
                                       '10', 'Call DOVENET',
                                       '11', 'Edit Settings',
                                       '12', 'Call Newslink',
