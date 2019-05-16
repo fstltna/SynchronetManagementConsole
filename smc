@@ -22,7 +22,7 @@ my $PagerCommand = "/usr/bin/less";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.5.1";
+my $MMC_ver = "1.5.2";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -117,7 +117,7 @@ sub ReadConfigFile
 		print $FH "fileeditor=/bin/nano\n";
 		print $FH "backupcommand=/root/SyncBackup/syncbackup.pl\n";
 		print $FH "pagercommand=/usr/bin/less\n";
-		print $FH "bbsowner=bbsowner\n";
+		print $FH "bbsowner=bbsowner:bbsowner\n";
 		print $FH "fileid=/sbbs/FILEID.txt\n";
 		print $FH "bbsid=/sbbs/BBSIDS.txt\n";
 		print $FH "debugmode=off\n";
