@@ -376,6 +376,27 @@ sub GetWhichBackup
 {
 	my $UsedFile = 0;
 	opendir(DIR, $BACKUP_DIR) or die $!;
+	my @file_list;
+	while ( my $file = readdir(DIR))
+	{
+		# We only want files
+		next unless (-f "$BACKUP_DIR/$file");
+
+		# Use a regular expression to find files ending in .tgz
+		next unless ($file =~ m/\.tgz$/);
+		push @file_list, "$BACKUP_DIR/$file";
+	}
+	closedir(DIR);
+
+	print scalar @file_list;
+	for my $file (sort
+		{
+			my @a_stat = stat($a);
+			my @b_stat = stat($b);
+			$a_stat[8] <=> $b_stat[8];
+		} @file_list ) {
+			print "file = $file\n";
+		};
 
 	print "Backup Number\tBackup Date\t\tBackup Size\n";
 	while (my $file = readdir(DIR))
