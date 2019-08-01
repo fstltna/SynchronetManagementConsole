@@ -11,10 +11,11 @@ Run smc, then use the "edit settings" option if your Synchronet BBS server is no
 
 You will need to run cpan and install these modules:
 
-- UI::Dialog
-- Term::ReadKey
-- Term::ANSIScreen
-- Proc::ProcessTable
+- cpan -i UI::Dialog
+- cpan -i Term::ReadKey
+- cpan -i Term::ANSIScreen
+- cpan -i Proc::ProcessTable
+- cpan -i Number::Bytes::Human
 
 You also need to have my Synchronet BBS Startup Script and Synchronet BBS Backup Script installed.
 
