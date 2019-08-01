@@ -376,7 +376,7 @@ sub GetWhichBackup
 	my $UsedFile = 0;
 	opendir(DIR, $BACKUP_DIR) or die $!;
 
-	print "Backup Number\tBackup Size\tBackup Date";
+	print "Backup Number\tBackup Size\tBackup Date\n";
 	while (my $file = readdir(DIR))
 	{
 		# We only want files
@@ -386,9 +386,8 @@ sub GetWhichBackup
 		next unless ($file =~ m/\.tgz$/);
 
 		$UsedFile++;
-		print "$file\n";
-		@stat = stat $BACKUP_DIR/$file;
-		print "$UsedFile\t$stat[7]\t$stat[8] ($file)\n";
+		my @stat = stat ("$BACKUP_DIR/$file");
+		print "$UsedFile\t\t$stat[7]\t$stat[8] ($file)\n";
 	}
 	closedir(DIR);
 
@@ -430,26 +429,26 @@ sub DoRestore
 	sleep(10);
 	# Create new folder
 	print "Creating new folder, please wait...";
-	PrintDebugCommand("mkdir $SBBSDIR-new);
-	system("mkdir $SBBSDIR-new);
+	PrintDebugCommand("mkdir $SBBSDIR-new");
+	system("mkdir $SBBSDIR-new");
 	PrintDebugCommand("touch $SBBSDIR-new/nostart");
 	system("touch $SBBSDIR-new/nostart");
 	# Swap folders
 	print "Swapping folders, please wait...";
-	PrintDebugCommand("mv $SBBSDIR $BBSDIR-keep");
-	system("mv $SBBSDIR $BBSDIR-keep");
-	PrintDebugCommand("mv $SBBSDIR-new $BBSDIR");
-	system("mv $SBBSDIR-new $BBSDIR");
-	PrintDebugCommand("rm -r $BBSDIR-keep");
-	system("rm -r $BBSDIR-keep");
+	PrintDebugCommand("mv $SBBSDIR $SBBSDIR-keep");
+	system("mv $SBBSDIR $SBBSDIR-keep");
+	PrintDebugCommand("mv $SBBSDIR-new $SBBSDIR");
+	system("mv $SBBSDIR-new $SBBSDIR");
+	PrintDebugCommand("rm -r $SBBSDIR-keep");
+	system("rm -r $SBBSDIR-keep");
 
 	# Do the restore
 	chdir ("/");
 	PrintDebugCommand("$RESTORE_COMMAND $BACKUP_DIR/syncbackup-$WhichBackup.tgz");
 	system("$RESTORE_COMMAND $BACKUP_DIR/syncbackup-$WhichBackup.tgz");
 	# Change owners
-	PrintDebugCommand("chown -R $bbsowner:$bbsowner /sbbs");
-	system("chown -R $bbsowner:$bbsowner /sbbs");
+	PrintDebugCommand("chown -R $BBS_OWNER /sbbs");
+	system("chown -R $BBS_OWNER /sbbs");
 	unlink("$SBBSDIR/nostart");
 }
 
