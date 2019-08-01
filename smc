@@ -246,7 +246,7 @@ sub MainMenu
                                       '5', 'Turn On Respawn',
                                       '6', 'Edit sbbs.ini',
                                       '7', 'Run scfg',
-                                      '8', 'Back Up BBS',
+                                      '8', 'Backup / Restore',
                                       '9', 'Set File Owners',
                                       '10', 'Call DOVENET',
                                       '11', 'Edit Settings',
@@ -382,7 +382,7 @@ while (-1)
 	}
 	elsif ($menuselection eq "2")
 	{
-		# Edit FilePost.txt file
+		# Do a restore
 		PrintDebugCommand("$FileEditor $SBBSDIR/exec/FilePost.txt");
 		system("$FileEditor $SBBSDIR/exec/FilePost.txt");
 	}
