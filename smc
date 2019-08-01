@@ -388,30 +388,18 @@ sub GetWhichBackup
 	}
 	closedir(DIR);
 
-	print scalar @file_list;
+	#print scalar @file_list;
+	print "Backup\tBackup Date\t\tBackup Size\n";
 	for my $file (sort
 		{
 			my @a_stat = stat($a);
 			my @b_stat = stat($b);
-			$a_stat[8] <=> $b_stat[8];
+			$b_stat[8] <=> $a_stat[8];
 		} @file_list ) {
-			print "file = $file\n";
+			$UsedFile++;
+			my @stat = stat ("$file");
+			print "$UsedFile\t" . strftime("%m/%d/%Y %H:%M:%S", localtime($stat[8])) . "\t$stat[7] ($file)\n";
 		};
-
-	print "Backup Number\tBackup Date\t\tBackup Size\n";
-	while (my $file = readdir(DIR))
-	{
-		# We only want files
-		next unless (-f "$BACKUP_DIR/$file");
-
-		# Use a regular expression to find files ending in .tgz
-		next unless ($file =~ m/\.tgz$/);
-
-		$UsedFile++;
-		my @stat = stat ("$BACKUP_DIR/$file");
-		print "$UsedFile\t\t" . strftime("%m/%d/%Y %H:%M:%S", localtime($stat[8])) . "\t$stat[7] ($file)\n";
-	}
-	closedir(DIR);
 
 	#Ask user which one
 	while(-1)
