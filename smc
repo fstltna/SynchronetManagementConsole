@@ -406,11 +406,13 @@ sub GetWhichBackup
 	{
 		print "Restore which backup? (1-5): ";
 		my $Chosen = <STDIN>;
+		chop ($Chosen);
 		if ((lc($Chosen) eq "q") || (lc($Chosen) eq "quit") || ($Chosen eq ""))
 		{
 			return "";
 		}
-		if (($Chosen >= 1) && ($Chosen <= 5))
+		my $IntChosen = int($Chosen);
+		if (($IntChosen >= 1) && ($IntChosen <= 5))
 		{
 			return $Chosen;
 		}
