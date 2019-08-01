@@ -10,11 +10,12 @@ use Proc::ProcessTable;
 my $FileEditor = "/bin/nano";
 my $InitDName = "/etc/init.d/synchronetbbs";
 my $SBBSDIR = "/sbbs";
-my $BBS_OWNER = "bbsowner";
+my $BBS_OWNER = "bbsowner:bbsowner";
 my $FILEID = "$SBBSDIR/FILEID.txt";
 my $BBSIDS = "$SBBSDIR/BBSIDS.txt";
 my $BackupCommand = "/root/SyncBackup/syncbackup.pl";
 my $PagerCommand = "/usr/bin/less";
+my $BACKUP_DIR = "/root/backups";
 
 ###################################################
 # No changes below here
@@ -36,6 +37,8 @@ my $CONF_FROM = "";
 my $CONF_SUBJECT = "";
 my $CONF_GROUPS = "";
 my $CONF_FILE = "";
+
+my $RESTORE_COMMAND = "tar xvzf";
 
 if ($ENV{'EDITOR'})
 {
@@ -106,6 +109,10 @@ sub ReadConfigFile
 			{
 				$DEBUG_MODE = $Setting;
 			}
+			if ($Command eq "backupdir")
+			{
+				$BACKUP_DIR = $Setting;
+			}
 		}
 		close($FH);
 	}
@@ -113,14 +120,15 @@ sub ReadConfigFile
 	{
 		# Store defaults
 		open (my $FH, ">", $MySettings) or die "Could not create default file '$MySettings' $!";
-		print $FH "sbbsdir=/sbbs\n";
-		print $FH "fileeditor=/bin/nano\n";
-		print $FH "backupcommand=/root/SyncBackup/syncbackup.pl\n";
-		print $FH "pagercommand=/usr/bin/less\n";
-		print $FH "bbsowner=bbsowner:bbsowner\n";
-		print $FH "fileid=/sbbs/FILEID.txt\n";
-		print $FH "bbsid=/sbbs/BBSIDS.txt\n";
-		print $FH "debugmode=off\n";
+		print $FH "sbbsdir=$SBBSDIR\n";
+		print $FH "fileeditor=$FileEditor\n";
+		print $FH "backupcommand=$BackupCommand\n";
+		print $FH "pagercommand=$PagerCommand\n";
+		print $FH "bbsowner=$BBS_OWNER\n";
+		print $FH "fileid=$FILEID\n";
+		print $FH "bbsid=$BBSIDS\n";
+		print $FH "backupdir=$BACKUP_DIR\n";
+		print $FH "debugmode=$DEBUG_MODE\n";
 		close($FH);
 	}
 }
@@ -363,8 +371,86 @@ sub BackupToolsMenu
                                       'q', 'Main Menu' ] );
 }
 
+sub GetWhichBackup
+{
+	my $UsedFile = 0;
+	opendir(DIR, $BACKUP_DIR) or die $!;
+
+	print "Backup Number\tBackup Size\tBackup Date";
+	while (my $file = readdir(DIR))
+	{
+		# We only want files
+		next unless (-f "$BACKUP_DIR/$file");
+
+		# Use a regular expression to find files ending in .tgz
+		next unless ($file =~ m/\.tgz$/);
+
+		$UsedFile++;
+		print "$file\n";
+		@stat = stat $BACKUP_DIR/$file;
+		print "$UsedFile\t$stat[7]\t$stat[8] ($file)\n";
+	}
+	closedir(DIR);
+
+	#Ask user which one
+	while(-1)
+	{
+		print "Restore which backup? (1-5): ";
+		my $Chosen = <STDIN>;
+		if ((lc($Chosen) eq "q") || (lc($Chosen) eq "quit") || ($Chosen eq ""))
+		{
+			return "";
+		}
+		if (($Chosen >= 1) && ($Chosen <= 5))
+		{
+			return $Chosen;
+		}
+	}
+}
+
 sub DoRestore
 {
+	my $WhichBackup = "";
+
+	# Get which backup they want
+	$WhichBackup = GetWhichBackup();
+	if ($WhichBackup eq "")
+	{
+		print "No backup selected\n";
+		return;
+	}
+	print "Using backup $WhichBackup...\n";
+
+	# Turn off respawn
+	PrintDebugCommand("touch $SBBSDIR/nostart");
+	system("touch $SBBSDIR/nostart");
+	# Kill the server process
+	print "Killing SBBS process, please wait...";
+	KillBBS();
+	sleep(10);
+	# Create new folder
+	print "Creating new folder, please wait...";
+	PrintDebugCommand("mkdir $SBBSDIR-new);
+	system("mkdir $SBBSDIR-new);
+	PrintDebugCommand("touch $SBBSDIR-new/nostart");
+	system("touch $SBBSDIR-new/nostart");
+	# Swap folders
+	print "Swapping folders, please wait...";
+	PrintDebugCommand("mv $SBBSDIR $BBSDIR-keep");
+	system("mv $SBBSDIR $BBSDIR-keep");
+	PrintDebugCommand("mv $SBBSDIR-new $BBSDIR");
+	system("mv $SBBSDIR-new $BBSDIR");
+	PrintDebugCommand("rm -r $BBSDIR-keep");
+	system("rm -r $BBSDIR-keep");
+
+	# Do the restore
+	chdir ("/");
+	PrintDebugCommand("$RESTORE_COMMAND $BACKUP_DIR/syncbackup-$WhichBackup.tgz");
+	system("$RESTORE_COMMAND $BACKUP_DIR/syncbackup-$WhichBackup.tgz");
+	# Change owners
+	PrintDebugCommand("chown -R $bbsowner:$bbsowner /sbbs");
+	system("chown -R $bbsowner:$bbsowner /sbbs");
+	unlink("$SBBSDIR/nostart");
 }
 
 sub BackupTools
@@ -387,7 +473,6 @@ while (-1)
 	elsif ($menuselection eq "2")
 	{
 		# Do a restore
-		PrintDebugCommand("DoRestore\(\)");
 		DoRestore();
                 print "Press Enter To Continue";
                 my $entered = <STDIN>;
