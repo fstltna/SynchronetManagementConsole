@@ -6,6 +6,7 @@ use UI::Dialog;
 use Term::ReadKey;
 use Term::ANSIScreen qw(cls);
 use Proc::ProcessTable;
+use POSIX qw(strftime);
 
 my $FileEditor = "/bin/nano";
 my $InitDName = "/etc/init.d/synchronetbbs";
@@ -376,7 +377,7 @@ sub GetWhichBackup
 	my $UsedFile = 0;
 	opendir(DIR, $BACKUP_DIR) or die $!;
 
-	print "Backup Number\tBackup Size\tBackup Date\n";
+	print "Backup Number\tBackup Date\t\tBackup Size\n";
 	while (my $file = readdir(DIR))
 	{
 		# We only want files
@@ -387,7 +388,7 @@ sub GetWhichBackup
 
 		$UsedFile++;
 		my @stat = stat ("$BACKUP_DIR/$file");
-		print "$UsedFile\t\t$stat[7]\t$stat[8] ($file)\n";
+		print "$UsedFile\t\t" . strftime("%m/%d/%Y %H:%M:%S", localtime($stat[8])) . "\t$stat[7] ($file)\n";
 	}
 	closedir(DIR);
 
