@@ -7,6 +7,7 @@ use Term::ReadKey;
 use Term::ANSIScreen qw(cls);
 use Proc::ProcessTable;
 use POSIX qw(strftime);
+use Number::Bytes::Human qw(format_bytes parse_bytes);
 
 my $FileEditor = "/bin/nano";
 my $InitDName = "/etc/init.d/synchronetbbs";
@@ -389,7 +390,8 @@ sub GetWhichBackup
 	closedir(DIR);
 
 	#print scalar @file_list;
-	print "Backup\tBackup Date\t\tBackup Size\n";
+	system("clear");
+	print "Backup\tBackup Date\t\tSize\n";
 	for my $file (sort
 		{
 			my @a_stat = stat($a);
@@ -398,7 +400,8 @@ sub GetWhichBackup
 		} @file_list ) {
 			$UsedFile++;
 			my @stat = stat ("$file");
-			print "$UsedFile\t" . strftime("%m/%d/%Y %H:%M:%S", localtime($stat[8])) . "\t$stat[7] ($file)\n";
+			my $size = format_bytes($stat[7], bs => 1000);
+			print "$UsedFile\t" . strftime("%m/%d/%Y %H:%M:%S", localtime($stat[8])) . "\t$size ($file)\n";
 		};
 
 	#Ask user which one
