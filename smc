@@ -295,74 +295,89 @@ sub PostingToolsMenu
 
 sub PostingTools
 {
-while (-1)
-{
-	PostingToolsMenu();
-	if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+	while (-1)
 	{
-		return;
-	}
-	elsif ($menuselection eq "1")
-	{
-		# Edit Announce.txt file
-		PrintDebugCommand("$FileEditor $SBBSDIR/exec/Announce.txt");
-		system("$FileEditor $SBBSDIR/exec/Announce.txt");
-	}
-	elsif ($menuselection eq "2")
-	{
-		# Edit FilePost.txt file
-		PrintDebugCommand("$FileEditor $SBBSDIR/exec/FilePost.txt");
-		system("$FileEditor $SBBSDIR/exec/FilePost.txt");
-	}
-	elsif ($menuselection eq "3")
-	{
-		# Edit FilePostBottom.txt file
-		PrintDebugCommand("$FileEditor $SBBSDIR/exec/FilePostBottom.txt");
-		system("$FileEditor $SBBSDIR/exec/FilePostBottom.txt");
-	}
-	elsif ($menuselection eq "4")
-	{
-		# Read in config
-		$CONF_FILE = $BBSIDS;
-		ReadConfig();
-
-		# Run BBS Announce
-		PrintDebugCommand("/root/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
-		system("/root/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
-	}
-	elsif ($menuselection eq "5")
-	{
-		# Read in config
-		$CONF_FILE = $FILEID;
-		ReadConfig();
-
-		# Run File Announce
-		PrintDebugCommand("/root/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
-		system("/root/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
-	}
-	elsif ($menuselection eq "6")
-	{
-		# Edit BBSIDS.txt file
-		if (! -f $BBSIDS)
+		PostingToolsMenu();
+		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
 		{
-			PrintDebugCommand("cp /root/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
-			system("cp /root/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
+			return;
 		}
-		PrintDebugCommand("$FileEditor $BBSIDS");
-		system("$FileEditor $BBSIDS");
-	}
-	elsif ($menuselection eq "7")
-	{
-		# Edit FILEID.txt file
-		if (! -f $FILEID)
+		elsif ($menuselection eq "1")
 		{
-			PrintDebugCommand("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
-			system("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
+			# Edit Announce.txt file
+			PrintDebugCommand("$FileEditor $SBBSDIR/exec/Announce.txt");
+			system("$FileEditor $SBBSDIR/exec/Announce.txt");
 		}
-		PrintDebugCommand("$FileEditor $FILEID");
-		system("$FileEditor $FILEID");
+		elsif ($menuselection eq "2")
+		{
+			# Edit FilePost.txt file
+			PrintDebugCommand("$FileEditor $SBBSDIR/exec/FilePost.txt");
+			system("$FileEditor $SBBSDIR/exec/FilePost.txt");
+		}
+		elsif ($menuselection eq "3")
+		{
+			# Edit FilePostBottom.txt file
+			PrintDebugCommand("$FileEditor $SBBSDIR/exec/FilePostBottom.txt");
+			system("$FileEditor $SBBSDIR/exec/FilePostBottom.txt");
+		}
+		elsif ($menuselection eq "4")
+		{
+			# Read in config
+			$CONF_FILE = $BBSIDS;
+			ReadConfig();
+	
+			# Run BBS Announce
+			PrintDebugCommand("/root/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
+			system("/root/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
+		}
+		elsif ($menuselection eq "5")
+		{
+			# Read in config
+			$CONF_FILE = $FILEID;
+			ReadConfig();
+
+			# Run File Announce
+			PrintDebugCommand("/root/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
+			system("/root/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
+		}
+		elsif ($menuselection eq "6")
+		{
+			# Edit BBSIDS.txt file
+			if (! -f $BBSIDS)
+			{
+				PrintDebugCommand("cp /root/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
+				system("cp /root/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
+			}
+			PrintDebugCommand("$FileEditor $BBSIDS");
+			system("$FileEditor $BBSIDS");
+		}
+		elsif ($menuselection eq "7")
+		{
+			# Edit FILEID.txt file
+			if (! -f $FILEID)
+			{
+				PrintDebugCommand("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
+				system("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
+			}
+			PrintDebugCommand("$FileEditor $FILEID");
+			system("$FileEditor $FILEID");
+		}
 	}
 }
+
+sub LogFilesMenu
+{
+	my $WantRespawn="ON";
+	CheckServerStatus();
+	if (-f "$SBBSDIR/nostart")
+	{
+		$WantRespawn="OFF";
+	}
+
+	$menuselection = $d->menu( title => "Log File Viewer Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
+                            list => [ '1', 'Screen Log File',
+                                      '2', 'Restore Backup',
+                                      'q', 'Main Menu' ] );
 }
 
 sub BackupToolsMenu
@@ -474,31 +489,56 @@ sub DoRestore
 	unlink("$SBBSDIR/nostart");
 }
 
-sub BackupTools
+sub LogFiles
 {
-while (-1)
-{
-	BackupToolsMenu();
-	if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+	while (-1)
 	{
-		return;
-	}
-	elsif ($menuselection eq "1")
-	{
-		# Run a backup
-		PrintDebugCommand("$BackupCommand");
-		system("$BackupCommand");
-                print "Press Enter To Continue";
-                my $entered = <STDIN>;
-	}
-	elsif ($menuselection eq "2")
-	{
-		# Do a restore
-		DoRestore();
-                print "Press Enter To Continue";
-                my $entered = <STDIN>;
+		LogFilesMenu();
+		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+		{
+			return;
+		}
+		elsif ($menuselection eq "1")
+		{
+			# Screen log file
+			PrintDebugCommand("Displaying Screen log file");
+			system("$PagerCommand $ScreenLog");
+		}
+		elsif ($menuselection eq "2")
+		{
+			# Do a restore
+			DoRestore();
+			print "Press Enter To Continue";
+			my $entered = <STDIN>;
+		}
 	}
 }
+
+sub BackupTools
+{
+	while (-1)
+	{
+		BackupToolsMenu();
+		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+		{
+			return;
+		}
+		elsif ($menuselection eq "1")
+		{
+			# Run a backup
+			PrintDebugCommand("$BackupCommand");
+			system("$BackupCommand");
+			print "Press Enter To Continue";
+			my $entered = <STDIN>;
+		}
+		elsif ($menuselection eq "2")
+		{
+			# Do a restore
+			DoRestore();
+			print "Press Enter To Continue";
+			my $entered = <STDIN>;
+		}
+	}
 }
 
 ReadConfigFile();
