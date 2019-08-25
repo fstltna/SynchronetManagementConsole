@@ -19,6 +19,11 @@ my $BackupCommand = "/root/SyncBackup/syncbackup.pl";
 my $PagerCommand = "/usr/bin/less";
 my $BACKUP_DIR = "/root/backups";
 my $ScreenLog = "/sbbs/SBBSScreen.log";
+my $ErrorLog = "/sbbs/data/error.log";
+my $GuruLog = "/sbbs/data/guru.log";
+my $HackLog = "/sbbs/data/hack.log";
+my $SbbsechoLog = "/sbbs/data/sbbsecho.log";
+my $SpamLog = "/sbbs/data/spam.log";
 
 ###################################################
 # No changes below here
@@ -120,6 +125,26 @@ sub ReadConfigFile
 			{
 				$ScreenLog = $Setting;
 			}
+			if ($Command eq "errorlog")
+			{
+				$ErrorLog = $Setting;
+			}
+			if ($Command eq "gurulog")
+			{
+				$GuruLog = $Setting;
+			}
+			if ($Command eq "hacklog")
+			{
+				$HackLog = $Setting;
+			}
+			if ($Command eq "sbbsecholog")
+			{
+				$SbbsechoLog = $Setting;
+			}
+			if ($Command eq "spamlog")
+			{
+				$SpamLog = $Setting;
+			}
 		}
 		close($FH);
 	}
@@ -137,6 +162,11 @@ sub ReadConfigFile
 		print $FH "backupdir=$BACKUP_DIR\n";
 		print $FH "debugmode=$DEBUG_MODE\n";
 		print $FH "screenlog=$ScreenLog\n";
+		print $FH "errorlog=$ErrorLog\n";
+		print $FH "gurulog=$GuruLog\n";
+		print $FH "hacklog=$HackLog\n";
+		print $FH "sbbsecholog=$SbbsechoLog\n";
+		print $FH "spamlog=$SpamLog\n";
 		close($FH);
 	}
 }
@@ -376,7 +406,11 @@ sub LogFilesMenu
 
 	$menuselection = $d->menu( title => "Log File Viewer Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
                             list => [ '1', 'Screen Log File',
-                                      '2', 'Restore Backup',
+                                      '2', 'Error Log File',
+                                      '3', 'Guru Log File',
+                                      '4', 'Hack Log File',
+                                      '5', 'Sbbsecho Log File',
+                                      '6', 'Spam Log File',
                                       'q', 'Main Menu' ] );
 }
 
@@ -506,10 +540,33 @@ sub LogFiles
 		}
 		elsif ($menuselection eq "2")
 		{
-			# Do a restore
-			DoRestore();
-			print "Press Enter To Continue";
-			my $entered = <STDIN>;
+			# Error Log File
+			PrintDebugCommand("Displaying Error log file");
+			system("$PagerCommand $ErrorLog");
+		}
+		elsif ($menuselection eq "3")
+		{
+			# Guru Log File
+			PrintDebugCommand("Displaying Guru log file");
+			system("$PagerCommand $GuruLog");
+		}
+		elsif ($menuselection eq "4")
+		{
+			# Hack Log File
+			PrintDebugCommand("Displaying Hack log file");
+			system("$PagerCommand $HackLog");
+		}
+		elsif ($menuselection eq "5")
+		{
+			# Sbbsecho Log File
+			PrintDebugCommand("Displaying Sbbsecho log file");
+			system("$PagerCommand $SbbsechoLog");
+		}
+		elsif ($menuselection eq "6")
+		{
+			# Spam Log File
+			PrintDebugCommand("Displaying Spam log file");
+			system("$PagerCommand $SpamLog");
 		}
 	}
 }
