@@ -18,6 +18,7 @@ my $BBSIDS = "$SBBSDIR/BBSIDS.txt";
 my $BackupCommand = "/root/SyncBackup/syncbackup.pl";
 my $PagerCommand = "/usr/bin/less";
 my $BACKUP_DIR = "/root/backups";
+my $ScreenLog = "/sbbs/SBBSScreen.log";
 
 ###################################################
 # No changes below here
@@ -25,7 +26,7 @@ my $BACKUP_DIR = "/root/backups";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.6.0";
+my $MMC_ver = "1.7.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -115,6 +116,10 @@ sub ReadConfigFile
 			{
 				$BACKUP_DIR = $Setting;
 			}
+			if ($Command eq "screenlog")
+			{
+				$ScreenLog = $Setting;
+			}
 		}
 		close($FH);
 	}
@@ -131,6 +136,7 @@ sub ReadConfigFile
 		print $FH "bbsid=$BBSIDS\n";
 		print $FH "backupdir=$BACKUP_DIR\n";
 		print $FH "debugmode=$DEBUG_MODE\n";
+		print $FH "screenlog=$ScreenLog\n";
 		close($FH);
 	}
 }
@@ -263,6 +269,7 @@ sub MainMenu
                                       '12', 'Call Newslink',
                                       '13', 'Reset BBS Proc.',
                                       '14', 'Posting Tools',
+                                      '15', 'Log Files',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -591,6 +598,11 @@ while (-1)
 	{
 		# Posting tools
 		PostingTools();
+	}
+	elsif ($menuselection eq "15")
+	{
+		# Log files
+		LogFiles();
 	}
 }
 
