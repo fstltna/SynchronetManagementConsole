@@ -31,7 +31,7 @@ my $SpamLog = "/sbbs/data/spam.log";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.7.0";
+my $MMC_ver = "1.7.1";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -653,6 +653,9 @@ while (-1)
 		# Run scfg
 		PrintDebugCommand("$SCFG");
 		system("$SCFG");
+		# Set owner of /sbbs
+		PrintDebugCommand("chown -R $BBS_OWNER /sbbs");
+		system("chown -R $BBS_OWNER /sbbs");
 	}
 	elsif ($menuselection eq "8")
 	{
