@@ -31,7 +31,7 @@ my $SpamLog = "/sbbs/data/spam.log";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.8.0";
+my $MMC_ver = "1.8.1";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -685,8 +685,8 @@ while (-1)
 	elsif ($menuselection eq "3")
 	{
 		$d->msgbox( text => "To exit the SBBS console and return to SMC press CTRL-A CTRL-D" );
-		PrintDebugCommand("screen -r");
-		system("screen -r");
+		PrintDebugCommand("screen -r SBBS");
+		system("screen -r SBBS");
 	}
 	elsif ($menuselection eq "4")
 	{
