@@ -24,6 +24,7 @@ my $GuruLog = "/sbbs/data/guru.log";
 my $HackLog = "/sbbs/data/hack.log";
 my $SbbsechoLog = "/sbbs/data/sbbsecho.log";
 my $SpamLog = "/sbbs/data/spam.log";
+my $TelnetCmd = "/usr/bin/telnet";
 
 ###################################################
 # No changes below here
@@ -31,7 +32,7 @@ my $SpamLog = "/sbbs/data/spam.log";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.8.1";
+my $MMC_ver = "1.9.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -145,6 +146,10 @@ sub ReadConfigFile
 			{
 				$SpamLog = $Setting;
 			}
+			if ($Command eq "telnetcmd")
+			{
+				$TelnetCmd = $Setting;
+			}
 		}
 		close($FH);
 	}
@@ -167,6 +172,7 @@ sub ReadConfigFile
 		print $FH "hacklog=$HackLog\n";
 		print $FH "sbbsecholog=$SbbsechoLog\n";
 		print $FH "spamlog=$SpamLog\n";
+		print $FH "telnetcmd=$TelnetCmd\n";
 		close($FH);
 	}
 }
@@ -300,6 +306,7 @@ sub MainMenu
                                       '13', 'Reset BBS Proc.',
                                       '14', 'Posting Tools',
                                       '15', 'Log Files',
+                                      '16', 'Telnet to BBS',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -763,6 +770,12 @@ while (-1)
 	{
 		# Log files
 		LogFiles();
+	}
+	elsif ($menuselection eq "16")
+	{
+		# Connect via telnet
+		system("clear");
+		system("$TelnetCmd localhost");
 	}
 }
 
