@@ -32,7 +32,7 @@ my $TelnetCmd = "/usr/bin/telnet";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.9.0";
+my $MMC_ver = "1.10.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -674,11 +674,15 @@ while (-1)
 	{
 		$d->msgbox( title => $enjoyedtitle, text => "Thanks for using SMC..." );
 		exit 0;
-	}
+	} 
 	if ($menuselection eq "1")
 	{
-		PrintDebugCommand("$InitDName start");
-		system("$InitDName start");
+		if ($d->yesno( text => "Confirm starting the server", text => "Are you sure you want to start the server? You should likely use option #13 instead..." ))
+		{
+			PrintDebugCommand("$InitDName start");
+			system("$InitDName start");
+			sleep(10);
+		}
 	}
 	elsif ($menuselection eq "2")
 	{
