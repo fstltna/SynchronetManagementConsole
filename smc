@@ -25,6 +25,7 @@ my $HackLog = "/sbbs/data/hack.log";
 my $SbbsechoLog = "/sbbs/data/sbbsecho.log";
 my $SpamLog = "/sbbs/data/spam.log";
 my $TelnetCmd = "/usr/bin/telnet";
+my $DoorLog = "/opt/doorparty-connector/nohup.out";
 
 ###################################################
 # No changes below here
@@ -32,7 +33,7 @@ my $TelnetCmd = "/usr/bin/telnet";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.10.0";
+my $MMC_ver = "1.11.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -173,6 +174,7 @@ sub ReadConfigFile
 		print $FH "sbbsecholog=$SbbsechoLog\n";
 		print $FH "spamlog=$SpamLog\n";
 		print $FH "telnetcmd=$TelnetCmd\n";
+		print $FH "doorlog=$DoorLog\n";
 		close($FH);
 	}
 }
@@ -424,6 +426,7 @@ sub LogFilesMenu
                                       '10', 'Clear Hack',
                                       '11', 'Clear SBBS Echo',
                                       '12', 'Clear Spam',
+                                      '13', 'DoorParty Log',
                                       'q', 'Main Menu' ] );
 }
 
@@ -634,6 +637,12 @@ sub LogFiles
 				PrintDebugCommand("Deleting Spam log file");
 				unlink($SpamLog);
 			}
+		}
+		elsif ($menuselection eq "13")
+		{
+			# Door Party Log File
+			PrintDebugCommand("Displaying Door Party log file");
+			system("$PagerCommand $DoorLog");
 		}
 	}
 }
