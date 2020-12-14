@@ -34,6 +34,7 @@ I then suggest you add this directory (SynchronetManagementConsole) into your pa
 6. "13 - Reset BBS Processess" - Resets just the BBS process so it can be automaticly restarted.
 7. "14 - Posting Tools" - Brings up the posting tools menu.
 8. "15 - Log Files" - Brings up the log file tools menu.
+9. "16 - Update Tools" - lets you update to latest versions of these tools
 
 Refer to this menu for what follows:
 
