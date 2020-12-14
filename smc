@@ -27,7 +27,11 @@ my $SpamLog = "/sbbs/data/spam.log";
 my $TelnetCmd = "/usr/bin/telnet";
 my $DoorLog = "/opt/doorparty-connector/nohup.out";
 my $UpdateCommand = "/usr/bin/git pull";
-my $SMCDir = "";
+my $SMCDir = "/root/SynchronetManagementConsole";
+my $BackupToolDir = "/root/SyncBackup";	# ZZZ
+my $StartupDir = "/root/SynchronetStartup";
+my $BinDir = "/root/bin";
+my $BBSUtils = "/root/bbs_utils";
 
 ###################################################
 # No changes below here
@@ -35,7 +39,7 @@ my $SMCDir = "";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $SMC_ver = "1.11.0";
+my $SMC_ver = "1.12.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -466,6 +470,7 @@ sub UpdateToolsMenu
                             list => [ '1', 'Update SMC',
                                       '2', 'Update Backup',
                                       '3', 'Update Startup',
+                                      '4', 'Update bbs_utils',
                                       'q', 'Main Menu' ] );
 }
 
@@ -493,7 +498,7 @@ sub UpdateTools
 		elsif ($menuselection eq "1")
 		{
 			# Update SMC
-			DoUpdate($SMCDir); # zzz
+			DoUpdate($SMCDir);
 		}
 		elsif ($menuselection eq "2")
 		{
@@ -504,9 +509,11 @@ sub UpdateTools
 		{
 			# Update Startup
 			DoUpdate($StartupDir);
-			system("cp $StartupDir/minetest $BinDir");
-			system("cp $StartupDir/startrelay $BinDir");
-			system("cp $StartupDir/startminetest $MINETESTDIR");
+		}
+		elsif ($menuselection eq "4")
+		{
+			# Update bbs_utils
+			DoUpdate($BBSUtils);
 		}
 	}
 }
