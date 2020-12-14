@@ -1,4 +1,4 @@
-# Synchronet BBS Management Console (1.10.0)
+# Synchronet BBS Management Console (1.11.0)
 Allows you to manage your Synchronet BBS server with a text based GUI - 
 Official support sites: [Official Github Repo](https://github.com/fstltna/SynchronetManagementConsole) - [Official Forum](https://synchronetbbs.org/index.php/forum/synchronet-management-console)
 ![Synchronet Logo](https://SynchronetBBS.org/SynchronetLogo.png)
@@ -33,6 +33,7 @@ I then suggest you add this directory (SynchronetManagementConsole) into your pa
 5. "12 - Call NEWSLINK" - Tell the BBS to check Newslink/USENET for new data right away.
 6. "13 - Reset BBS Processess" - Resets just the BBS process so it can be automaticly restarted.
 7. "14 - Posting Tools" - Brings up the posting tools menu.
+8. "15 - Log Files" - Brings up the log file tools menu.
 
 Refer to this menu for what follows:
 

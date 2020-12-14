@@ -26,6 +26,8 @@ my $SbbsechoLog = "/sbbs/data/sbbsecho.log";
 my $SpamLog = "/sbbs/data/spam.log";
 my $TelnetCmd = "/usr/bin/telnet";
 my $DoorLog = "/opt/doorparty-connector/nohup.out";
+my $UpdateCommand = "/usr/bin/git pull";
+my $SMCDir = "";
 
 ###################################################
 # No changes below here
@@ -33,7 +35,7 @@ my $DoorLog = "/opt/doorparty-connector/nohup.out";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $MMC_ver = "1.11.0";
+my $SMC_ver = "1.11.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -55,7 +57,7 @@ if ($ENV{'EDITOR'})
         $FileEditor = $ENV{'EDITOR'};
 }
 
-my $d = new UI::Dialog ( backtitle => "Synchronet BBS Management Console v$MMC_ver", height => 20, width => 65, listheight => 5,
+my $d = new UI::Dialog ( backtitle => "Synchronet BBS Management Console v$SMC_ver", height => 20, width => 65, listheight => 5,
 	order => [ 'ascii', 'cdialog', 'xdialog' ]);
 
 my $windowtitle = "Welcome to the Synchronet BBS Management Console!";
@@ -151,6 +153,11 @@ sub ReadConfigFile
 			{
 				$TelnetCmd = $Setting;
 			}
+			if ($Command eq "updatecommand")
+			{
+				$UpdateCommand = $Setting;
+			}
+
 		}
 		close($FH);
 	}
@@ -175,6 +182,7 @@ sub ReadConfigFile
 		print $FH "spamlog=$SpamLog\n";
 		print $FH "telnetcmd=$TelnetCmd\n";
 		print $FH "doorlog=$DoorLog\n";
+		print $FH "updatecommand=$UpdateCommand\n";
 		close($FH);
 	}
 }
@@ -309,6 +317,7 @@ sub MainMenu
                                       '14', 'Posting Tools',
                                       '15', 'Log Files',
                                       '16', 'Telnet to BBS',
+                                      '17', 'Update Tools',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -443,6 +452,63 @@ sub BackupToolsMenu
                             list => [ '1', 'Run Backup',
                                       '2', 'Restore Backup',
                                       'q', 'Main Menu' ] );
+}
+
+sub UpdateToolsMenu
+{
+	my $WantRespawn="ON";
+	CheckServerStatus();
+	if (-f "$SBBSDIR/nostart")
+	{
+		$WantRespawn="OFF";
+	}
+	$menuselection = $d->menu( title => "Update Tools Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
+                            list => [ '1', 'Update SMC',
+                                      '2', 'Update Backup',
+                                      '3', 'Update Startup',
+                                      'q', 'Main Menu' ] );
+}
+
+sub DoUpdate
+{
+	my $DesiredDir = $_[0];
+
+	# Update desired utility
+	chdir ($DesiredDir);
+	PrintDebugCommand("Running $UpdateCommand in $DesiredDir\n");
+	system("$UpdateCommand");
+	print "Press Enter To Continue";
+	my $entered = <STDIN>;
+}
+
+sub UpdateTools
+{
+	while (-1)
+	{
+		UpdateToolsMenu();
+		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+		{
+			return;
+		}
+		elsif ($menuselection eq "1")
+		{
+			# Update SMC
+			DoUpdate($SMCDir); # zzz
+		}
+		elsif ($menuselection eq "2")
+		{
+			# Update BackupToolDir
+			DoUpdate($BackupToolDir);
+		}
+		elsif ($menuselection eq "3")
+		{
+			# Update Startup
+			DoUpdate($StartupDir);
+			system("cp $StartupDir/minetest $BinDir");
+			system("cp $StartupDir/startrelay $BinDir");
+			system("cp $StartupDir/startminetest $MINETESTDIR");
+		}
+	}
 }
 
 sub GetWhichBackup
@@ -789,6 +855,11 @@ while (-1)
 		# Connect via telnet
 		system("clear");
 		system("$TelnetCmd localhost");
+	}
+	elsif ($menuselection eq "17")
+	{
+		# Update tools
+		UpdateTools();
 	}
 }
 
