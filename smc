@@ -39,7 +39,7 @@ my $BBSUtils = "/root/bbs_utils";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $SMC_ver = "1.12.0";
+my $SMC_ver = "1.13.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
