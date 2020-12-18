@@ -305,8 +305,8 @@ sub MainMenu
 	}
 
 	$menuselection = $d->menu( title => "Main Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
-                            list => [ '1', 'Start Server',
-                                      '2', 'Stop Server',
+                            list => [ '1', 'Start Watchdog',
+                                      '2', 'Stop Watchdog',
                                       '3', 'Server Console',
                                       '4', 'Turn Off Respawn',
                                       '5', 'Turn On Respawn',
@@ -759,7 +759,7 @@ while (-1)
 	} 
 	if ($menuselection eq "1")
 	{
-		if ($d->yesno( text => "Confirm starting the server", text => "Are you sure you want to start the server? You should likely use option #13 instead..." ))
+		if ($d->yesno( text => "Confirm starting the server watchdog", text => "Are you *SURE* you want to start the server watchdog? You should likely use option #13 instead..." ))
 		{
 			PrintDebugCommand("$InitDName start");
 			system("$InitDName start");
@@ -768,7 +768,7 @@ while (-1)
 	}
 	elsif ($menuselection eq "2")
 	{
-		if ($d->yesno( text => "Confirm stopping the server", text => "Are you sure you want to shut down the server?" ))
+		if ($d->yesno( text => "Confirm stopping the server watchdog", text => "Are you *SURE* you want to shut down the server watchdog?" ))
 		{
 			PrintDebugCommand("$InitDName stop");
 			system("$InitDName stop");
