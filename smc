@@ -39,7 +39,7 @@ my $BBSUtils = "/root/bbs_utils";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $SMC_ver = "1.13.0";
+my $SMC_ver = "1.14.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -440,6 +440,7 @@ sub LogFilesMenu
                                       '11', 'Clear SBBS Echo',
                                       '12', 'Clear Spam',
                                       '13', 'DoorParty Log',
+                                      '14', 'CLear All Logs',
                                       'q', 'Main Menu' ] );
 }
 
@@ -716,6 +717,40 @@ sub LogFiles
 			# Door Party Log File
 			PrintDebugCommand("Displaying Door Party log file");
 			system("$PagerCommand $DoorLog");
+		}
+		elsif ($menuselection eq "14")
+		{
+			# Clear all logs
+			if (-f $SpamLog)
+			{
+				PrintDebugCommand("Deleting Spam log file");
+				unlink($SpamLog);
+			}
+			if (-f $SbbsechoLog)
+			{
+				PrintDebugCommand("Deleting SBBS Echo log file");
+				unlink($SbbsechoLog);
+			}
+			if (-f $HackLog)
+			{
+				PrintDebugCommand("Deleting Hack log file");
+				unlink($HackLog);
+			}
+			if (-f $GuruLog)
+			{
+				PrintDebugCommand("Deleting Guru log file");
+				unlink($GuruLog);
+			}
+			if (-f $ErrorLog)
+			{
+				PrintDebugCommand("Deleting Error log file");
+				unlink($ErrorLog);
+			}
+			if (-f $ScreenLog)
+			{
+				PrintDebugCommand("Deleting Screen log file");
+				unlink($ScreenLog);
+			}
 		}
 	}
 }
