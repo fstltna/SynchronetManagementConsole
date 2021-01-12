@@ -28,7 +28,7 @@ my $TelnetCmd = "/usr/bin/telnet";
 my $DoorLog = "/opt/doorparty-connector/nohup.out";
 my $UpdateCommand = "/usr/bin/git pull";
 my $SMCDir = "/root/SynchronetManagementConsole";
-my $BackupToolDir = "/root/SyncBackup";	# ZZZ
+my $BackupToolDir = "/root/SyncBackup";
 my $StartupDir = "/root/SynchronetStartup";
 my $BinDir = "/root/bin";
 my $BBSUtils = "/root/bbs_utils";
@@ -39,7 +39,7 @@ my $BBSUtils = "/root/bbs_utils";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $SMC_ver = "1.14.0";
+my $SMC_ver = "1.15.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -314,14 +314,13 @@ sub MainMenu
                                       '7', 'Run scfg',
                                       '8', 'Backup / Restore',
                                       '9', 'Set File Owners',
-                                      '10', 'Call DOVENET',
+                                      '10', 'Call Outs Menu',
                                       '11', 'Edit Settings',
-                                      '12', 'Call Newslink',
-                                      '13', 'Reset BBS Proc.',
-                                      '14', 'Posting Tools',
-                                      '15', 'Log Files',
-                                      '16', 'Telnet to BBS',
-                                      '17', 'Update Tools',
+                                      '12', 'Reset BBS Proc.',
+                                      '13', 'Posting Tools',
+                                      '14', 'Log Files',
+                                      '15', 'Telnet to BBS',
+                                      '16', 'Update Tools',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -755,6 +754,52 @@ sub LogFiles
 	}
 }
 
+sub CallOutsMenu
+{
+	my $WantRespawn="ON";
+	CheckServerStatus();
+	if (-f "$SBBSDIR/nostart")
+	{
+		$WantRespawn="OFF";
+	}
+
+	$menuselection = $d->menu( title => "Call-Outs Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
+                            list => [ '1', 'Call DOVENet',
+                                      '2', 'Call UseNet',
+                                      '3', 'Call GameNet',
+                                      'q', 'Main Menu' ] );
+}
+
+sub CallOuts
+{
+	while (-1)
+	{
+		CallOutsMenu();
+		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+		{
+			return;
+		}
+		elsif ($menuselection eq "1")
+		{
+			# Force a call-out to Dovenet
+			PrintDebugCommand("touch $SBBSDIR/data/qnet/vert.now");
+			system("touch $SBBSDIR/data/qnet/vert.now");
+		}
+		elsif ($menuselection eq "2")
+		{
+			# Force a call-out to Usenet/Newslink
+			PrintDebugCommand("touch $SBBSDIR/data/newslink.now");
+			system("touch $SBBSDIR/data/newslink.now");
+		}
+		elsif ($menuselection eq "3")
+		{
+			# Force a call-out to GameNet
+			PrintDebugCommand("touch $SBBSDIR/data/qnet/gamenet.now");
+			system("touch $SBBSDIR/data/qnet/vert.now");
+		}
+	}
+}
+
 sub BackupTools
 {
 	while (-1)
@@ -858,9 +903,8 @@ while (-1)
 	}
 	elsif ($menuselection eq "10")
 	{
-		# Force a call-out to Dovenet
-		PrintDebugCommand("touch $SBBSDIR/data/qnet/vert.now");
-		system("touch $SBBSDIR/data/qnet/vert.now");
+		# Call-out menu
+		CallOuts();
 	}
 	elsif ($menuselection eq "11")
 	{
@@ -871,34 +915,28 @@ while (-1)
 	}
 	elsif ($menuselection eq "12")
 	{
-		# Force a call-out to Usenet/Newslink
-		PrintDebugCommand("touch $SBBSDIR/data/newslink.now");
-		system("touch $SBBSDIR/data/newslink.now");
-	}
-	elsif ($menuselection eq "13")
-	{
 		# Reset the server process
 		print "Killing process, please wait...";
 		KillBBS();
 		sleep(10);
 	}
-	elsif ($menuselection eq "14")
+	elsif ($menuselection eq "13")
 	{
 		# Posting tools
 		PostingTools();
 	}
-	elsif ($menuselection eq "15")
+	elsif ($menuselection eq "14")
 	{
 		# Log files
 		LogFiles();
 	}
-	elsif ($menuselection eq "16")
+	elsif ($menuselection eq "15")
 	{
 		# Connect via telnet
 		system("clear");
 		system("$TelnetCmd localhost");
 	}
-	elsif ($menuselection eq "17")
+	elsif ($menuselection eq "16")
 	{
 		# Update tools
 		UpdateTools();
