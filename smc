@@ -439,7 +439,7 @@ sub LogFilesMenu
                                       '11', 'Clear SBBS Echo',
                                       '12', 'Clear Spam',
                                       '13', 'DoorParty Log',
-                                      '14', 'CLear All Logs',
+                                      '14', 'Clear All Logs',
                                       'q', 'Main Menu' ] );
 }
 
