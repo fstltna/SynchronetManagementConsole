@@ -768,6 +768,7 @@ sub CallOutsMenu
                                       '2', 'Call UseNet',
                                       '3', 'Call GameNet',
                                       '4', 'Call SFNet',
+                                      '5', 'Call WeedNet',
                                       'q', 'Main Menu' ] );
 }
 
@@ -796,7 +797,7 @@ sub CallOuts
 		{
 			# Force a call-out to GameNet
 			PrintDebugCommand("touch $SBBSDIR/data/qnet/gamenet.now");
-			system("touch $SBBSDIR/data/qnet/vert.now");
+			system("touch $SBBSDIR/data/qnet/gamenet.now");
 		}
 		elsif ($menuselection eq "4")
 		{
