@@ -39,7 +39,7 @@ my $BBSUtils = "/root/bbs_utils";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $SMC_ver = "1.15.1";
+my $SMC_ver = "1.15.2";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -803,6 +803,12 @@ sub CallOuts
 			# Force a call-out to SFNet
 			PrintDebugCommand("touch $SBBSDIR/data/qnet/sfnet.now");
 			system("touch $SBBSDIR/data/qnet/sfnet.now");
+		}
+		elsif ($menuselection eq "5")
+		{
+			# Force a call-out to Weednet
+			PrintDebugCommand("touch $SBBSDIR/data/qnet/weednet.now");
+			system("touch $SBBSDIR/data/qnet/weednet.now");
 		}
 	}
 }
