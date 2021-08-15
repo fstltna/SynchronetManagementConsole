@@ -13,8 +13,8 @@ my $FileEditor = "/bin/nano";
 my $InitDName = "/etc/init.d/synchronetbbs";
 my $SBBSDIR = "/sbbs";
 my $BBS_OWNER = "bbsowner:bbsowner";
-my $FILEID = "$SBBSDIR/FILEID.txt";
-my $BBSIDS = "$SBBSDIR/BBSIDS.txt";
+my $FILEID = "/root/.fa_settings";
+my $BBSIDS = "/root/.ba_settings";
 my $BackupCommand = "/root/SyncBackup/syncbackup.pl";
 my $PagerCommand = "/usr/bin/less";
 my $BACKUP_DIR = "/root/backups";
@@ -161,7 +161,6 @@ sub ReadConfigFile
 			{
 				$UpdateCommand = $Setting;
 			}
-
 		}
 		close($FH);
 	}
@@ -241,15 +240,15 @@ sub ReadConfig
 	{
 		chomp $row;
 		($Keyword, $Keyvalue) = split(':', $row);
-		if ($Keyword eq "FROM")
+		if (substr($row, 0, 5) eq "from")
 		{
-			$CONF_FROM = $Keyvalue;
+			$CONF_FROM = substr($row, 5);
 		}
-		elsif ($Keyword eq "SUBJECT")
+		elsif (substr($row, 0, 8)  eq "subject")
 		{
-			$CONF_SUBJECT = $Keyvalue;
+			$CONF_SUBJECT = substr($row, 8);
 		}
-		elsif ($Keyword eq "GROUPS")
+		elsif (substr($row, 0, 7) eq "groups")
 		{
 			$CONF_GROUPS = $Keyvalue;
 		}
@@ -815,8 +814,8 @@ sub CallOuts
 		elsif ($menuselection eq "6")
 		{
 			# Force a call-out to Retronet
-			PrintDebugCommand("touch $SBBSDIR/data/qnet/retronet.now");
-			system("touch $SBBSDIR/data/qnet/retronet.now");
+			PrintDebugCommand("touch $SBBSDIR/data/qnet/freeway.now");
+			system("touch $SBBSDIR/data/qnet/freeway.now");
 		}
 	}
 }
