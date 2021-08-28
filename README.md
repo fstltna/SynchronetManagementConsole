@@ -1,4 +1,4 @@
-# Synchronet BBS Management Console (1.15.4)
+# Synchronet BBS Management Console (1.15.5)
 Allows you to manage your Synchronet BBS server with a text based GUI - 
 Official support sites: [Official Github Repo](https://github.com/fstltna/SynchronetManagementConsole) - [Official Forum](https://synchronetbbs.org/index.php/forum/synchronet-management-console)
 ![Synchronet Logo](https://SynchronetBBS.org/SynchronetLogo.png)
@@ -28,11 +28,11 @@ I then suggest you add this directory (SynchronetManagementConsole) into your pa
 
 1. "8 - Back Up BBS" - As it says this backs up your BBS folder tree.
 2. "9 - Set File Owners" - If you have made any changes in scfg or through the shell you should run this option to reset the owner of the BBS tree to the BBS owner and not "root" or other users.
-3. "10 - Call DOVENET" - Tell the BBS to check Dovenet for new data right away.
+3. "10 - Call Outs Menu" - Links to force manual call-outs to other networks
 4. "11 - Edit Settings" - Edit the settings used in SMC itself. Should not need changes but it is here just in case. You can edit the "debugmode" option to "on" to display each command that will be run before executing them.
-5. "12 - Call NEWSLINK" - Tell the BBS to check Newslink/USENET for new data right away.
-6. "13 - Reset BBS Processess" - Resets just the BBS process so it can be automaticly restarted.
-7. "14 - Posting Tools" - Brings up the posting tools menu.
+5. "12 - Reset BBS Processess" - Resets just the BBS process so it can be automaticly restarted.
+6. "13 - Posting Tools" - Brings up the posting tools menu.
+7. "14 - Log Files" - Brings up the log file tools menu.
 8. "15 - Log Files" - Brings up the log file tools menu.
 9. "16 - Update Tools" - lets you update to latest versions of these tools
 
