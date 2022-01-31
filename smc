@@ -39,7 +39,7 @@ my $BBSUtils = "/root/bbs_utils";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $SMC_ver = "1.15.3";
+my $SMC_ver = "1.15.4";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -769,6 +769,7 @@ sub CallOutsMenu
                                       '4', 'Call SFNet',
                                       '5', 'Call WeedNet',
                                       '6', 'Call RetroNet',
+                                      '7', 'Call RetroNeo',
                                       'q', 'Main Menu' ] );
 }
 
@@ -816,6 +817,12 @@ sub CallOuts
 			# Force a call-out to Retronet
 			PrintDebugCommand("touch $SBBSDIR/data/qnet/freeway.now");
 			system("touch $SBBSDIR/data/qnet/freeway.now");
+		}
+		elsif ($menuselection eq "7")
+		{
+			# Force a call-out to Retronet Neo
+			PrintDebugCommand("touch $SBBSDIR/data/qnet/retrone.now");
+			system("touch $SBBSDIR/data/qnet/retrone.now");
 		}
 	}
 }
