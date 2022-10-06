@@ -32,6 +32,8 @@ my $BackupToolDir = "/root/SyncBackup";
 my $StartupDir = "/root/SynchronetStartup";
 my $BinDir = "/root/bin";
 my $BBSUtils = "/root/bbs_utils";
+my $DATADIR = "$SBBSDIR/data";
+my $WCCmd = "/usr/bin/wc";
 
 ###################################################
 # No changes below here
@@ -39,7 +41,7 @@ my $BBSUtils = "/root/bbs_utils";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $SMC_ver = "1.16.0";
+my $SMC_ver = "1.17.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -55,6 +57,8 @@ my $CONF_GROUPS = "";
 my $CONF_FILE = "";
 
 my $RESTORE_COMMAND = "tar xvzf";
+
+my $AnyBad = 0;
 
 if ($ENV{'EDITOR'})
 {
@@ -320,6 +324,7 @@ sub MainMenu
                                       '14', 'Log Files',
                                       '15', 'Telnet to BBS',
                                       '16', 'Update Tools',
+                                      '17', 'View Bad Packets',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -513,6 +518,62 @@ sub UpdateTools
 		{
 			# Update bbs_utils
 			DoUpdate($BBSUtils);
+		}
+	}
+}
+
+sub BadPacketsMenu
+{
+	my $WantRespawn="ON";
+	CheckServerStatus();
+	if (-f "$SBBSDIR/nostart")
+	{
+		$WantRespawn="OFF";
+	}
+	$menuselection = $d->menu( title => "Bad Packets Management Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
+                            list => [ '1', 'List Bad Packets',
+                                      '2', 'Remove All Bad',
+                                      'q', 'Main Menu' ] );
+}
+sub GetNumBadPackets
+{
+	#$AnyBad = system("ls $DATADIR|grep bad\$ \|wc");
+	$AnyBad = `ls $DATADIR|grep bad\$ \|$WCCmd `;
+}
+
+sub ManageBadPackets
+{
+	while (-1)
+	{
+		BadPacketsMenu();
+		GetNumBadPackets();
+		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+		{
+			return;
+		}
+		if ($AnyBad == 0)
+		{
+			system("clear");
+			print "No bad packets found\n";
+			print "--- Press Enter To Continue ---";
+			my $entered = <STDIN>;
+		}
+		elsif ($menuselection eq "1")
+		{
+			# List bad packets
+			system("clear");
+			system ("ls -l $DATADIR/*.bad");
+			print "--- Press Enter To Continue ---";
+			my $entered = <STDIN>;
+		}
+		elsif ($menuselection eq "2")
+		{
+			# Delete the bad packets
+			system("clear");
+			system ("rm $DATADIR/*.bad");
+			print "All bad packet files removed\n";
+			print "--- Press Enter To Continue ---";
+			my $entered = <STDIN>;
 		}
 	}
 }
@@ -967,6 +1028,11 @@ while (-1)
 	{
 		# Update tools
 		UpdateTools();
+	}
+	elsif ($menuselection eq "17")
+	{
+		# Update tools
+		ManageBadPackets();
 	}
 }
 
