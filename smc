@@ -34,6 +34,7 @@ my $BinDir = "/root/bin";
 my $BBSUtils = "/root/bbs_utils";
 my $DATADIR = "$SBBSDIR/data";
 my $WCCmd = "/usr/bin/wc";
+my $MCCmd = "/usr/bin/mc";
 
 ###################################################
 # No changes below here
@@ -533,6 +534,7 @@ sub BadPacketsMenu
 	$menuselection = $d->menu( title => "Bad Packets Management Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
                             list => [ '1', 'List Bad Packets',
                                       '2', 'Remove All Bad',
+                                      '3', 'Browse Files',
                                       'q', 'Main Menu' ] );
 }
 sub GetNumBadPackets
@@ -550,6 +552,12 @@ sub ManageBadPackets
 		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
 		{
 			return;
+		}
+		if ($menuselection eq "3")
+		{
+			# Delete the bad packets
+			system("$MCCmd -u /sbbs/data /tmp");
+			next;
 		}
 		if ($AnyBad == 0)
 		{
