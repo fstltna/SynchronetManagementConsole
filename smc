@@ -42,7 +42,7 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $SMC_ver = "1.17.0";
+my $SMC_ver = "1.18.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -211,24 +211,17 @@ sub PrintDebugCommand
 
 sub CheckServerStatus
 {
-	$ServerStatus = "Stopped";
-
-        # This checks for the BBS process
-        my $t = Proc::ProcessTable->new;
-        foreach my $p ( @{$t->table} )
-        {
-                #printf($FORMAT, 
-                #       $p->pid, 
-                #       $p->ttydev, 
-                #       $p->state, 
-                #       scalar(localtime($p->start)), 
-                #       $p->cmndline);
-                if ($p->cmndline eq "sbbs")
-                {
-                        # Saw a bare sbbs entry
-			$ServerStatus = "Running";
-                }
-        }
+	my $running=`ps ax|grep sbbs|grep -v grep`;
+	chop($running);
+	$running = substr($running, -4);
+	if ($running ne "sbbs")
+	{
+		$ServerStatus = "Stopped";
+	}
+	else
+	{
+		$ServerStatus = "Running";
+	}
 }
 
 sub ReadConfig
@@ -275,28 +268,8 @@ sub ReadConfig
 
 sub KillBBS
 {
-	# This kills just the BBS process, so it can be restarted
-	# via the startup script
-	my $FORMAT = "%-6s %-10s %-8s %-24s %s\n";
-	my $t = Proc::ProcessTable->new;
-	#printf($FORMAT, "PID", "TTY", "STAT", "START", "COMMAND"); 
-	foreach my $p ( @{$t->table} )
-	{
-		#printf($FORMAT, 
-		#	$p->pid, 
-		#	$p->ttydev, 
-		#	$p->state, 
-		#	scalar(localtime($p->start)), 
-		#	$p->cmndline);
-		if ($p->cmndline eq "sbbs")
-		{
-			# Saw a bare sbbs entry
-			my $pid = $p->pid;
-			#print "**** saw it $pid\n";
-			PrintDebugCommand("kill $pid");
-			system("kill $pid");
-		}
-	}
+	PrintDebugCommand("killall sbbs");
+	system("killall sbbs");
 }
 
 sub MainMenu
