@@ -42,7 +42,7 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 
-my $SMC_ver = "1.18.0";
+my $SMC_ver = "1.19.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -272,6 +272,12 @@ sub KillBBS
 	system("killall sbbs");
 }
 
+sub ForceKillBBS
+{
+	PrintDebugCommand("killall -s9 sbbs");
+	system("killall -s9 sbbs");
+}
+
 sub MainMenu
 {
 	my $WantRespawn="ON";
@@ -302,6 +308,46 @@ sub MainMenu
                                       'q', 'Quit SMC' ] );
 }
 
+sub ProcesKillMenu
+{
+	my $WantRespawn="ON";
+	CheckServerStatus();
+	if (-f "$SBBSDIR/nostart")
+	{
+		$WantRespawn="OFF";
+	}
+
+	$menuselection = $d->menu( title => "Process Kill Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
+                            list => [ '1', 'Request Clean',
+                                      '2', 'Force Kill',
+                                      'q', 'Main Menu' ] );
+}
+
+sub ProcessKill
+{
+	while (-1)
+	{
+		ProcesKillMenu();
+		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+		{
+			return;
+		}
+		elsif ($menuselection eq "1")
+		{
+			# Reset the server process
+			print "Killing sbbs process, please wait...";
+			KillBBS();
+			sleep(10);
+		}
+		elsif ($menuselection eq "2")
+		{
+			# Force-kill server process
+			print "Force-killing sbbs process, please wait...";
+			ForceKillBBS();
+			sleep(10);
+		}
+	}
+}
 sub PostingToolsMenu
 {
 	my $WantRespawn="ON";
@@ -984,10 +1030,8 @@ while (-1)
 	}
 	elsif ($menuselection eq "12")
 	{
-		# Reset the server process
-		print "Killing process, please wait...";
-		KillBBS();
-		sleep(10);
+		# Reset the server process menu
+		ProcessKill();
 	}
 	elsif ($menuselection eq "13")
 	{
