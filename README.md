@@ -1,5 +1,5 @@
 # Synchronet BBS Management Console (1.20.0)
-Allows you to manage your Synchronet BBS server with a text based GUI - 
+Allows you to manage your Synchronet BBS server with a text based UI - 
 Official support sites: [Official Github Repo](https://github.com/fstltna/SynchronetManagementConsole) - [Official Forum](https://synchronetbbs.org/index.php/forum/synchronet-management-console)
 ![Synchronet Logo](https://SynchronetBBS.org/SynchronetLogo.png)
 
