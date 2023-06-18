@@ -41,8 +41,8 @@ my $MCCmd = "/usr/bin/mc";
 ###################################################
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
-
-my $SMC_ver = "1.19.0";
+my $User = $ENV{'USER'};
+my $SMC_ver = "1.20.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -60,6 +60,20 @@ my $CONF_FILE = "";
 my $RESTORE_COMMAND = "tar xvzf";
 
 my $AnyBad = 0;
+
+if ($User ne "root")
+{
+	print "Synchronet BBS Management Console v$SMC_ver\n";
+	print "==============================================\n";
+	print "Not running as root.\nSMC has to be run as root for some functions to work properly.\n";
+	print "Do you want to run it anyway? (Y/n): ";
+	my $entered = <STDIN>;
+	chop($entered);
+	if (($entered eq "n") || ($entered eq "N") || ($entered eq "no") || ($entered eq "NO"))
+	{
+		exit(0);
+	}
+}
 
 if ($ENV{'EDITOR'})
 {
