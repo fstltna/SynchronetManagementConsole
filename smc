@@ -42,7 +42,7 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 my $User = $ENV{'USER'};
-my $SMC_ver = "1.20.0";
+my $SMC_ver = "1.21.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -319,6 +319,7 @@ sub MainMenu
                                       '15', 'Telnet to BBS',
                                       '16', 'Update Tools',
                                       '17', 'View Bad Packets',
+                                      '18', 'Edit Text Files',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -570,10 +571,149 @@ sub BadPacketsMenu
                                       '3', 'Browse Files',
                                       'q', 'Main Menu' ] );
 }
+
 sub GetNumBadPackets
 {
 	#$AnyBad = system("ls $DATADIR|grep bad\$ \|wc");
 	$AnyBad = `ls $DATADIR|grep bad\$ \|$WCCmd `;
+}
+
+sub EditTextFilesMenu
+{
+	my $WantRespawn="ON";
+	CheckServerStatus();
+	if (-f "$SBBSDIR/nostart")
+	{
+		$WantRespawn="OFF";
+	}
+	$menuselection = $d->menu( title => "Edit Text Files Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
+                            list => [ '1', 'Edit ip.can',
+                                      '2', 'Edit email.can',
+                                      '3', 'Edit host.can',
+                                      '4', 'Edit name.can',
+                                      '5', 'Edit password.can',
+                                      '6', 'Edit phone.can',
+                                      '7', 'Edit subject.can',
+                                      '8', 'Edit zipmsg.txt',
+                                      '9', 'Edit ircmotd.txt',
+                                      '10', 'Edit answer.msg',
+                                      '11', 'Edit badpassword.msg',
+                                      '12', 'Edit bullseye.asc',
+                                      '13', 'Edit feedback.msg',
+                                      '14', 'Edit newuser.msg',
+                                      '15', 'Edit system.msg',
+                                      '16', 'Edit welcome.msg',
+                                      '17', 'Edit banner1.msg',
+                                      '18', 'Edit banner2.msg',
+                                      '19', 'Edit banner3.msg',
+                                      'q', 'Main Menu' ] );
+}
+
+sub EditTextFiles
+{
+	while (-1)
+	{
+		EditTextFilesMenu();
+		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+		{
+			return;
+		}
+		if ($menuselection eq "1")
+		{
+			# Edit ip.can
+			system ("$FileEditor /sbbs/text/ip.can");
+		}
+		elsif ($menuselection eq "2")
+		{
+			# Edit email.can
+			system ("$FileEditor /sbbs/text/email.can");
+		}
+		elsif ($menuselection eq "3")
+		{
+			# Edit host.can
+			system ("$FileEditor /sbbs/text/host.can");
+		}
+		elsif ($menuselection eq "4")
+		{
+			# Edit name.can
+			system ("$FileEditor /sbbs/text/name.can");
+		}
+		elsif ($menuselection eq "5")
+		{
+			# Edit password.can
+			system ("$FileEditor /sbbs/text/password.can");
+		}
+		elsif ($menuselection eq "6")
+		{
+			# Edit phone.can
+			system ("$FileEditor /sbbs/text/phone.can");
+		}
+		elsif ($menuselection eq "7")
+		{
+			# Edit subject.can
+			system ("$FileEditor /sbbs/text/subject.can");
+		}
+		elsif ($menuselection eq "8")
+		{
+			# Edit zipmsg.txt
+			system ("$FileEditor /sbbs/text/zipmsg.txt");
+		}
+		elsif ($menuselection eq "9")
+		{
+			# Edit ircmotd.txt
+			system ("$FileEditor /sbbs/text/ircmotd.txt");
+		}
+		elsif ($menuselection eq "10")
+		{
+			# Edit answer.msg
+			system ("$FileEditor /sbbs/text/answer.msg");
+		}
+		elsif ($menuselection eq "11")
+		{
+			# Edit badpassword.msg
+			system ("$FileEditor /sbbs/text/badpassword.msg");
+		}
+		elsif ($menuselection eq "12")
+		{
+			# Edit bullseye.asc
+			system ("$FileEditor /sbbs/text/bullseye.asc");
+		}
+		elsif ($menuselection eq "13")
+		{
+			# Edit feedback.msg
+			system ("$FileEditor /sbbs/text/feedback.msg");
+		}
+		elsif ($menuselection eq "14")
+		{
+			# Edit newuser.msg
+			system ("$FileEditor /sbbs/text/newuser.msg");
+		}
+		elsif ($menuselection eq "15")
+		{
+			# Edit system.msg
+			system ("$FileEditor /sbbs/text/system.msg");
+		}
+		elsif ($menuselection eq "16")
+		{
+			# Edit welcome.msg
+			system ("$FileEditor /sbbs/text/welcome.msg");
+		}
+		elsif ($menuselection eq "17")
+		{
+			# Edit banner1.msg
+			system ("$FileEditor /sbbs/text/banner1.msg");
+		}
+		elsif ($menuselection eq "18")
+		{
+			# Edit banner2.msg
+			system ("$FileEditor /sbbs/text/banner2.msg");
+		}
+		elsif ($menuselection eq "19")
+		{
+			# Edit banner3.msg
+			system ("$FileEditor /sbbs/text/banner3.msg");
+		}
+	}
 }
 
 sub ManageBadPackets
@@ -1070,8 +1210,13 @@ while (-1)
 	}
 	elsif ($menuselection eq "17")
 	{
-		# Update tools
+		# Manage any bad packets
 		ManageBadPackets();
+	}
+	elsif ($menuselection eq "18")
+	{
+		# Edit various text files
+		EditTextFiles();
 	}
 }
 
