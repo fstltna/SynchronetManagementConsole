@@ -42,13 +42,14 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 my $User = $ENV{'USER'};
-my $SMC_ver = "1.21.0";
+my $SMC_ver = "1.22.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
 my $BotVersion = "";
 my $UserName = "";
 my $ServerStatus = "foo";
+my $WatchdogStatus = "foo";
 my $SCFG = "$SBBSDIR/exec/scfg";
 my $DEBUG_MODE = "off";
 
@@ -221,6 +222,21 @@ sub PrintDebugCommand
 	print "About to run:\n$PassedString\n";
 	print "Press Enter To Run This:";
 	my $entered = <STDIN>;
+}
+
+sub CheckWatchdogStatus
+{
+	my $running=`ps ax|grep startsynchronetbbs|grep -v grep`;
+	chop($running);
+	$running = substr($running, -18);
+	if ($running ne "startsynchronetbbs")
+	{
+		$WatchdogStatus = "Stopped";
+	}
+	else
+	{
+		$WatchdogStatus = "Running";
+	}
 }
 
 sub CheckServerStatus
@@ -1108,7 +1124,15 @@ while (-1)
 	} 
 	if ($menuselection eq "1")
 	{
-		if ($d->yesno( text => "Confirm starting the server watchdog", text => "Are you *SURE* you want to start the server watchdog? You should likely use option #12 instead..." ))
+		# Check if wtachdog is running
+		CheckWatchdogStatus();
+		if ($WatchdogStatus eq "Running")
+		{
+			system("clear");
+			print "Watchdog is already running\n";
+			sleep(3);
+		}
+		elsif ($d->yesno( text => "Confirm starting the server watchdog", text => "Are you *SURE* you want to start the server watchdog?" ))
 		{
 			PrintDebugCommand("$InitDName start");
 			system("$InitDName start");
@@ -1117,7 +1141,7 @@ while (-1)
 	}
 	elsif ($menuselection eq "2")
 	{
-		if ($d->yesno( text => "Confirm stopping the server watchdog", text => "Are you *SURE* you want to shut down the server watchdog?" ))
+		if ($d->yesno( text => "Confirm stopping the server watchdog", text => "Are you *SURE* you want to shut down the server watchdog? You should likely use option #12 instead..." ))
 		{
 			PrintDebugCommand("$InitDName stop");
 			system("$InitDName stop");
