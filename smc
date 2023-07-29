@@ -1157,7 +1157,7 @@ sub FunTools
 		{
 			# Disk free space
 			system("clear");
-			system("df");
+			system("df -h");
 			print "Press Enter To Continue:";
 			my $entered = <STDIN>;
 		}
