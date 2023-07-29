@@ -42,7 +42,7 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 my $User = $ENV{'USER'};
-my $SMC_ver = "1.22.0";
+my $SMC_ver = "1.23.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -336,6 +336,7 @@ sub MainMenu
                                       '16', 'Update Tools',
                                       '17', 'View Bad Packets',
                                       '18', 'Edit Text Files',
+                                      '19', 'Fun Tools',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -510,6 +511,23 @@ sub BackupToolsMenu
 	$menuselection = $d->menu( title => "Backup Tools Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
                             list => [ '1', 'Run Backup',
                                       '2', 'Restore Backup',
+                                      'q', 'Main Menu' ] );
+}
+
+sub FunToolsMenu
+{
+	my $WantRespawn="ON";
+	CheckServerStatus();
+	if (-f "$SBBSDIR/nostart")
+	{
+		$WantRespawn="OFF";
+	}
+
+	$menuselection = $d->menu( title => "Fun Tools Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
+                            list => [ '1', 'Who is Online',
+                                      '2', 'Last Logins',
+                                      '3', 'Disk Free',
+                                      '4', 'Current Proc',
                                       'q', 'Main Menu' ] );
 }
 
@@ -1112,6 +1130,48 @@ sub BackupTools
 	}
 }
 
+sub FunTools
+{
+	while (-1)
+	{
+		FunToolsMenu();
+		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
+		{
+			return;
+		}
+		elsif ($menuselection eq "1")
+		{
+			# Who is online
+			system("clear");
+			system("w");
+			print "Press Enter To Continue:";
+			my $entered = <STDIN>;
+		}
+		elsif ($menuselection eq "2")
+		{
+			# Last logins
+			system("clear");
+			system("last | $PagerCommand");
+		}
+		elsif ($menuselection eq "3")
+		{
+			# Disk free space
+			system("clear");
+			system("df");
+			print "Press Enter To Continue:";
+			my $entered = <STDIN>;
+		}
+		elsif ($menuselection eq "4")
+		{
+			# Running processes
+			system("clear");
+			print "Press \"q\" To Exit. Press Enter To Continue:";
+			my $entered = <STDIN>;
+			system("top");
+		}
+	}
+}
+
 ReadConfigFile();
 
 while (-1)
@@ -1241,6 +1301,11 @@ while (-1)
 	{
 		# Edit various text files
 		EditTextFiles();
+	}
+	elsif ($menuselection eq "19")
+	{
+		# Go to fun menu
+		FunTools();
 	}
 }
 
