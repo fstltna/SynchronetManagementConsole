@@ -42,7 +42,7 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 my $User = $ENV{'USER'};
-my $SMC_ver = "1.23.1";
+my $SMC_ver = "1.24.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -61,6 +61,7 @@ my $CONF_FILE = "";
 my $RESTORE_COMMAND = "tar xvzf";
 
 my $AnyBad = 0;
+my $PidFile = "/sbbs/ctrl/sbbs.pid";
 
 if ($User ne "root")
 {
@@ -75,6 +76,37 @@ if ($User ne "root")
 		exit(0);
 	}
 }
+
+sub IsRunning
+{
+        if (! -f $PidFile)
+        {
+                print "PID file not found\n";
+                return("nope");
+        }
+        # PID file found, checking for process
+        open(my $fh, '<:encoding(UTF-8)', $PidFile);
+        if ($fh eq "")
+        {
+                print "Could not open file '$PidFile' for reading $!";
+                return("nope");
+        }
+        my $CurLine = 0;
+        while (my $row = <$fh>)
+        {
+                chomp $row;
+                print "Read pid file '$row'\n";
+                $CurLine = $row;
+        }
+        close($fh);
+        if (kill(0, $CurLine) != 1)
+        {
+                return "nope";
+        }
+        return "sbbs";
+}
+
+my $running=IsRunning();
 
 if ($ENV{'EDITOR'})
 {
@@ -226,10 +258,10 @@ sub PrintDebugCommand
 
 sub CheckWatchdogStatus
 {
-	my $running=`ps ax|grep startsynchronetbbs|grep -v grep`;
-	chop($running);
-	$running = substr($running, -18);
-	if ($running ne "startsynchronetbbs")
+	my $wdrunning=`ps ax|grep startsynchronetbbs|grep -v grep`;
+	chop($wdrunning);
+	$wdrunning = substr($running, -18);
+	if ($wdrunning ne "startsynchronetbbs")
 	{
 		$WatchdogStatus = "Stopped";
 	}
@@ -241,9 +273,7 @@ sub CheckWatchdogStatus
 
 sub CheckServerStatus
 {
-	my $running=`ps ax|grep sbbs|grep -v grep`;
-	chop($running);
-	$running = substr($running, -4);
+	$running=IsRunning();
 	if ($running ne "sbbs")
 	{
 		$ServerStatus = "Stopped";
