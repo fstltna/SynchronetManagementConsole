@@ -42,7 +42,7 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 my $User = $ENV{'USER'};
-my $SMC_ver = "1.23.0";
+my $SMC_ver = "1.23.1";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -640,6 +640,7 @@ sub EditTextFilesMenu
                                       '17', 'Edit banner1.msg',
                                       '18', 'Edit banner2.msg',
                                       '19', 'Edit banner3.msg',
+                                      '20', 'Edit alias.cfg',
                                       'q', 'Main Menu' ] );
 }
 
@@ -746,6 +747,11 @@ sub EditTextFiles
 		{
 			# Edit banner3.msg
 			system ("$FileEditor /sbbs/text/banner3.msg");
+		}
+		elsif ($menuselection eq "20")
+		{
+			# Edit alias.cfg
+			system ("$FileEditor /sbbs/ctrl/alias.cfg");
 		}
 	}
 }
