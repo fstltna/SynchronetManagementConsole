@@ -42,7 +42,7 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 my $User = $ENV{'USER'};
-my $SMC_ver = "1.24.0";
+my $SMC_ver = "1.24.1";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -404,9 +404,12 @@ sub ProcessKill
 		elsif ($menuselection eq "2")
 		{
 			# Force-kill server process
-			print "Force-killing sbbs process, please wait...";
-			ForceKillBBS();
-			sleep(10);
+			if ($d->yesno( text => "Confirm force-killing BBS process", text => "Are you *SURE* you want to force kill the BBS process?\nYou should first try the \#1 option and see if that works" ))
+			{
+				print "Force-killing sbbs process, please wait for 10 seconds...";
+				ForceKillBBS();
+				sleep(10);
+			}
 		}
 	}
 }
