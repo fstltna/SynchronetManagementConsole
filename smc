@@ -15,7 +15,7 @@ my $SBBSDIR = "/sbbs";
 my $BBS_OWNER = "bbsowner:bbsowner";
 my $FILEID = "/root/.fa_settings";
 my $BBSIDS = "/root/.ba_settings";
-my $BackupCommand = "/root/SyncBackup/syncbackup.pl";
+my $BackupCommand = "/root/SyncBackup/syncbackup.pl -snapshot";
 my $PagerCommand = "/usr/bin/less";
 my $BACKUP_DIR = "/root/backups";
 my $ScreenLog = "/sbbs/SBBSScreen.log";
@@ -42,7 +42,7 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 my $User = $ENV{'USER'};
-my $SMC_ver = "1.24.1";
+my $SMC_ver = "1.25.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";

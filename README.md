@@ -1,4 +1,4 @@
-# Synchronet BBS Management Console (1.24.0)
+# Synchronet BBS Management Console (1.25.0)
 Allows you to manage your Synchronet BBS server with a text based UI - 
 Official support sites: [Official Github Repo](https://github.com/fstltna/SynchronetManagementConsole) - [Official Forum](https://synchronetbbs.org/index.php/forum/synchronet-management-console)
 ![Synchronet Logo](https://SynchronetBBS.org/SynchronetLogo.png)
@@ -9,13 +9,7 @@ Official support sites: [Official Github Repo](https://github.com/fstltna/Synchr
 
 Run smc, then use the "edit settings" option if your Synchronet BBS server is not in "/sbbs".
 
-You will need to run cpan and install these modules:
-
-- cpan -i UI::Dialog
-- cpan -i Term::ReadKey
-- cpan -i Term::ANSIScreen
-- cpan -i Proc::ProcessTable
-- cpan -i Number::Bytes::Human
+You will need to run ./installdeps
 
 You also need to have my Synchronet BBS Startup Script and Synchronet BBS Backup Script installed.
 
