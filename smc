@@ -81,14 +81,14 @@ sub IsRunning
 {
         if (! -f $PidFile)
         {
-                print "PID file not found\n";
+		PrintDebugCommand("PID file not found\n");
                 return("nope");
         }
         # PID file found, checking for process
         open(my $fh, '<:encoding(UTF-8)', $PidFile);
         if ($fh eq "")
         {
-                print "Could not open file '$PidFile' for reading $!";
+		PrintDebugCommand("Could not open file '$PidFile' for reading $!\n");
                 return("nope");
         }
         my $CurLine = 0;
