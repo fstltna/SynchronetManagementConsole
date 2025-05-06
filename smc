@@ -13,11 +13,11 @@ my $FileEditor = "/bin/nano";
 my $InitDName = "/etc/init.d/synchronetbbs";
 my $SBBSDIR = "/sbbs";
 my $BBS_OWNER = "bbsowner:bbsowner";
-my $FILEID = "/root/.fa_settings";
-my $BBSIDS = "/root/.ba_settings";
-my $BackupCommand = "/root/SyncBackup/syncbackup.pl -snapshot";
+my $FILEID = "/home/bbsowner/.fa_settings";
+my $BBSIDS = "/home/bbsowner/.ba_settings";
+my $BackupCommand = "/home/bbsowner/SyncBackup/syncbackup.pl -snapshot";
 my $PagerCommand = "/usr/bin/less";
-my $BACKUP_DIR = "/root/backups";
+my $BACKUP_DIR = "/home/bbsowner/backups";
 my $ScreenLog = "/sbbs/SBBSScreen.log";
 my $ErrorLog = "/sbbs/data/error.log";
 my $GuruLog = "/sbbs/data/guru.log";
@@ -27,11 +27,11 @@ my $SpamLog = "/sbbs/data/spam.log";
 my $TelnetCmd = "/usr/bin/telnet";
 my $DoorLog = "/opt/doorparty-connector/nohup.out";
 my $UpdateCommand = "/usr/bin/git pull";
-my $SMCDir = "/root/SynchronetManagementConsole";
-my $BackupToolDir = "/root/SyncBackup";
-my $StartupDir = "/root/SynchronetStartup";
-my $BinDir = "/root/bin";
-my $BBSUtils = "/root/bbs_utils";
+my $SMCDir = "/home/bbsowner/SynchronetManagementConsole";
+my $BackupToolDir = "/home/bbsowner/SyncBackup";
+my $StartupDir = "/home/bbsowner/SynchronetStartup";
+my $BinDir = "/home/bbsowner/bin";
+my $BBSUtils = "/home/bbsowner/bbs_utils";
 my $DATADIR = "$SBBSDIR/data";
 my $WCCmd = "/usr/bin/wc";
 my $MCCmd = "/usr/bin/mc";
@@ -42,7 +42,7 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 my $User = $ENV{'USER'};
-my $SMC_ver = "1.25.0";
+my $SMC_ver = "1.26.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -63,19 +63,19 @@ my $RESTORE_COMMAND = "tar xvzf";
 my $AnyBad = 0;
 my $PidFile = "/sbbs/ctrl/sbbs.pid";
 
-if ($User ne "root")
-{
-	print "Synchronet BBS Management Console v$SMC_ver\n";
-	print "==============================================\n";
-	print "Not running as root.\nSMC has to be run as root for some functions to work properly.\n";
-	print "Do you want to run it anyway? (Y/n): ";
-	my $entered = <STDIN>;
-	chop($entered);
-	if (($entered eq "n") || ($entered eq "N") || ($entered eq "no") || ($entered eq "NO"))
-	{
-		exit(0);
-	}
-}
+#if ($User ne "root")
+#{
+#	print "Synchronet BBS Management Console v$SMC_ver\n";
+#	print "==============================================\n";
+#	print "Not running as root.\nSMC has to be run as root for some functions to work properly.\n";
+#	print "Do you want to run it anyway? (Y/n): ";
+#	my $entered = <STDIN>;
+#	chop($entered);
+#	if (($entered eq "n") || ($entered eq "N") || ($entered eq "no") || ($entered eq "NO"))
+#	{
+#		exit(0);
+#	}
+#}
 
 sub IsRunning
 {
@@ -94,9 +94,9 @@ sub IsRunning
         my $CurLine = 0;
         while (my $row = <$fh>)
         {
-                chomp $row;
-                print "Read pid file '$row'\n";
-                $CurLine = $row;
+		chomp $row;
+		PrintDebugCommand("Read pid file '$row'\n");
+		$CurLine = $row;
         }
         close($fh);
         if (kill(0, $CurLine) != 1)
@@ -467,8 +467,8 @@ sub PostingTools
 			ReadConfig();
 	
 			# Run BBS Announce
-			PrintDebugCommand("/root/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
-			system("/root/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
+			PrintDebugCommand("/home/bbsowner/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
+			system("/home/bbsowner/bbs_utils/bbs_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --groups='$CONF_GROUPS'");
 		}
 		elsif ($menuselection eq "5")
 		{
@@ -477,16 +477,16 @@ sub PostingTools
 			ReadConfig();
 
 			# Run File Announce
-			PrintDebugCommand("/root/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
-			system("/root/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
+			PrintDebugCommand("/home/bbsowner/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
+			system("/home/bbsowner/bbs_utils/file_announce.pl --bbsowner='$CONF_FROM' --bbssubj='$CONF_SUBJECT' --group='$CONF_GROUPS'");
 		}
 		elsif ($menuselection eq "6")
 		{
 			# Edit BBSIDS.txt file
 			if (! -f $BBSIDS)
 			{
-				PrintDebugCommand("cp /root/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
-				system("cp /root/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
+				PrintDebugCommand("cp /home/bbsowner/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
+				system("cp /home/bbsowner/SynchronetManagementConsole/BBS_ANN_DEF.txt $BBSIDS");
 			}
 			PrintDebugCommand("$FileEditor $BBSIDS");
 			system("$FileEditor $BBSIDS");
@@ -496,8 +496,8 @@ sub PostingTools
 			# Edit FILEID.txt file
 			if (! -f $FILEID)
 			{
-				PrintDebugCommand("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
-				system("cp /root/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
+				PrintDebugCommand("cp /home/bbsowner/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
+				system("cp /home/bbsowner/SynchronetManagementConsole/FILE_ANN_DEF.txt $FILEID");
 			}
 			PrintDebugCommand("$FileEditor $FILEID");
 			system("$FileEditor $FILEID");
@@ -880,6 +880,13 @@ sub GetWhichBackup
 		}
 	}
 }
+sub FixPerms
+{
+	PrintDebugCommand("sudo chown -R $BBS_OWNER /sbbs");
+	system("sudo chown -R $BBS_OWNER /sbbs");
+	PrintDebugCommand("sudo setcap 'cap_net_bind_service=+ep' /sbbs/exec/sbbs");
+	system("sudo setcap 'cap_net_bind_service=+ep' /sbbs/exec/sbbs");
+}
 
 sub DoRestore
 {
@@ -920,9 +927,8 @@ sub DoRestore
 	chdir ("/");
 	PrintDebugCommand("$RESTORE_COMMAND $BACKUP_DIR/syncbackup-$WhichBackup.tgz");
 	system("$RESTORE_COMMAND $BACKUP_DIR/syncbackup-$WhichBackup.tgz");
-	# Change owners
-	PrintDebugCommand("chown -R $BBS_OWNER /sbbs");
-	system("chown -R $BBS_OWNER /sbbs");
+	# Change owners and perms
+	FixPerms();
 	unlink("$SBBSDIR/nostart");
 }
 
@@ -1279,8 +1285,7 @@ while (-1)
 		PrintDebugCommand("$SCFG");
 		system("$SCFG");
 		# Set owner of /sbbs
-		PrintDebugCommand("chown -R $BBS_OWNER /sbbs");
-		system("chown -R $BBS_OWNER /sbbs");
+		FixPerms();
 	}
 	elsif ($menuselection eq "8")
 	{
@@ -1290,8 +1295,7 @@ while (-1)
 	elsif ($menuselection eq "9")
 	{
 		# Set owner of /sbbs
-		PrintDebugCommand("chown -R $BBS_OWNER /sbbs");
-		system("chown -R $BBS_OWNER /sbbs");
+		FixPerms();
 	}
 	elsif ($menuselection eq "10")
 	{

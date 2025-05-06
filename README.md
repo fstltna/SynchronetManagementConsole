@@ -1,4 +1,4 @@
-# Synchronet BBS Management Console (1.25.0)
+# Synchronet BBS Management Console (1.26.0)
 Allows you to manage your Synchronet BBS server with a text based UI - 
 Official support sites: [Official Github Repo](https://github.com/fstltna/SynchronetManagementConsole) - [Official Forum](https://synchronetbbs.org/index.php/forum/synchronet-management-console)
 ![Synchronet Logo](https://SynchronetBBS.org/SynchronetLogo.png)
@@ -15,13 +15,13 @@ You also need to have my Synchronet BBS Startup Script and Synchronet BBS Backup
 
 I then suggest you add this directory (SynchronetManagementConsole) into your path, so that you can just run "git pull" to upgrade to the latest version as updates come out. Put this at the top of your .bashrc file:
 
->export PATH=/root/SynchronetManagementConsole:$PATH
+>export PATH=/home/bbsowner/SynchronetManagementConsole:$PATH
 
 
 ***
 
 1. "8 - Back Up BBS" - As it says this backs up your BBS folder tree.
-2. "9 - Set File Owners" - If you have made any changes in scfg or through the shell you should run this option to reset the owner of the BBS tree to the BBS owner and not "root" or other users.
+2. "9 - Set File Perms" - If you have recompiled anything you should run this option to reset the permissions of the BBS tree to allow sbbs to open low ports.
 3. "10 - Call Outs Menu" - Links to force manual call-outs to other networks
 4. "11 - Edit Settings" - Edit the settings used in SMC itself. Should not need changes but it is here just in case. You can edit the "debugmode" option to "on" to display each command that will be run before executing them.
 5. "12 - Reset BBS Processess" - Resets just the BBS process so it can be automaticly restarted.
