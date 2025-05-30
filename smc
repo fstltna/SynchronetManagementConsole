@@ -42,7 +42,7 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 my $User = $ENV{'USER'};
-my $SMC_ver = "1.26.1";
+my $SMC_ver = "1.26.2";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -1284,8 +1284,6 @@ while (-1)
 		# Run scfg
 		PrintDebugCommand("$SCFG");
 		system("$SCFG");
-		# Set owner of /sbbs
-		FixPerms();
 	}
 	elsif ($menuselection eq "8")
 	{
