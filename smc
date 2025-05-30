@@ -354,7 +354,7 @@ sub MainMenu
                                       '16', 'Update Tools',
                                       '17', 'View Bad Packets',
                                       '18', 'Edit Text Files',
-                                      '19', 'Fun Tools',
+                                      '19', 'Shell Tools',
                                       'q', 'Quit SMC' ] );
 }
 
@@ -535,7 +535,7 @@ sub BackupToolsMenu
                                       'q', 'Main Menu' ] );
 }
 
-sub FunToolsMenu
+sub ShellToolsMenu
 {
 	my $WantRespawn="ON";
 	CheckServerStatus();
@@ -544,12 +544,12 @@ sub FunToolsMenu
 		$WantRespawn="OFF";
 	}
 
-	$menuselection = $d->menu( title => "Fun Tools Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
+	$menuselection = $d->menu( title => "Shell Tools Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
                             list => [ '1', 'Who is Online',
                                       '2', 'Last Logins',
                                       '3', 'Disk Free',
                                       '4', 'Current Proc',
-                                      '5', 'Exit To Shell',
+                                      '5', 'Spawn Shell',
                                       'q', 'Main Menu' ] );
 }
 
@@ -1164,11 +1164,11 @@ sub BackupTools
 	}
 }
 
-sub FunTools
+sub ShellTools
 {
 	while (-1)
 	{
-		FunToolsMenu();
+		ShellToolsMenu();
 		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
 		{
 			return;
@@ -1207,6 +1207,7 @@ sub FunTools
 		{
 			# Go to shell
 			system("clear");
+			chdir("$ENV{HOME}");
 			system("$ShellCommand");
 		}
 	}
@@ -1343,7 +1344,7 @@ while (-1)
 	elsif ($menuselection eq "19")
 	{
 		# Go to fun menu
-		FunTools();
+		ShellTools();
 	}
 }
 
