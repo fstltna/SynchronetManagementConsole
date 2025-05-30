@@ -42,7 +42,7 @@ my $MCCmd = "/usr/bin/mc";
 
 my $MySettings = "$ENV{'HOME'}/.smcrc";
 my $User = $ENV{'USER'};
-my $SMC_ver = "1.26.0";
+my $SMC_ver = "1.26.1";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -63,19 +63,7 @@ my $RESTORE_COMMAND = "tar xvzf";
 my $AnyBad = 0;
 my $PidFile = "/sbbs/ctrl/sbbs.pid";
 
-#if ($User ne "root")
-#{
-#	print "Synchronet BBS Management Console v$SMC_ver\n";
-#	print "==============================================\n";
-#	print "Not running as root.\nSMC has to be run as root for some functions to work properly.\n";
-#	print "Do you want to run it anyway? (Y/n): ";
-#	my $entered = <STDIN>;
-#	chop($entered);
-#	if (($entered eq "n") || ($entered eq "N") || ($entered eq "no") || ($entered eq "NO"))
-#	{
-#		exit(0);
-#	}
-#}
+my $ShellCommand = "/usr/bin/bash";
 
 sub IsRunning
 {
@@ -561,6 +549,7 @@ sub FunToolsMenu
                                       '2', 'Last Logins',
                                       '3', 'Disk Free',
                                       '4', 'Current Proc',
+                                      '5', 'Exit To Shell',
                                       'q', 'Main Menu' ] );
 }
 
@@ -1213,6 +1202,12 @@ sub FunTools
 			print "Press \"q\" To Exit. Press Enter To Continue:";
 			my $entered = <STDIN>;
 			system("top");
+		}
+		elsif ($menuselection eq "5")
+		{
+			# Go to shell
+			system("clear");
+			system("$ShellCommand");
 		}
 	}
 }
